@@ -18,7 +18,7 @@ Lecture site for Code Platoon Phase I, **Fundamentals: JavaScript and Python**: 
 
 ## The codepad
 
-`shared/codepad.js` + `shared/codepad.css`: a VS Code look-alike on the code slides. **N** types the next chunk, **R** runs both files (JavaScript in a Web Worker printing like Node; Python on Pyodide 0.27.7, real CPython 3.12). `playground/` is the same editor as a full page for students.
+`shared/codepad.js` + `shared/codepad.css`: VS Code on the code slides. The editor is **Monaco** (the editor inside VS Code, from jsDelivr); under each file is a terminal you type `node file.js` / `python3 file.py` into. JavaScript runs in a Web Worker and prints like Node; Python runs on Pyodide 0.27.7 (real CPython 3.12). Ctrl+S saves (the terminal runs the saved file), Ctrl+C stops a program. **N** / **R** type prepared chunks and commands as a backup. Offline it falls back to a simple editor. `playground/` is the same thing as a full page for students.
 
 ## Instructor kit
 

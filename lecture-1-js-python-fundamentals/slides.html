@@ -26,7 +26,7 @@
   <aside class="notes">
     <p><b>Before class</b> (demo-kit/RUNBOOK.md): open this deck in <b>Chrome</b> with internet on (Python loads into the slides). Check <code>node --version</code> and <code>python3 --version</code> in your own terminal.</p>
     <p>Press <b>T</b> to start the clock. Ask everyone to open <b>VS Code</b> and a <b>terminal</b>.</p>
-    <p><b>The code slides:</b> <b>N</b> types the next chunk for you, <b>R</b> runs both files. Click into the code to type yourself; <b>Esc</b> to leave. Presenter window (<b>P</b>) shows the next chunk before it's typed.</p>
+    <p><b>The code slides are a real editor (Monaco, the editor inside VS Code).</b> Click in and <b>type live</b>: autocomplete and hovers work. <b>Ctrl+S</b> saves (● on the tab = unsaved; the terminal runs the <b>saved</b> file, like real VS Code). Click the terminal and type <code>node file.js</code> / <code>python3 file.py</code>. <b>Ctrl+C</b> stops a program, ↑ repeats a command. <b>Esc</b> leaves the editor. <b>Backup:</b> <b>N</b> types the next prepared chunk, <b>R</b> types and runs the commands for you.</p>
   </aside>
 </section>
 
@@ -123,7 +123,8 @@ python3 --version</pre>
   <aside class="notes">
     <p><b>** CODE ALONG, about 2 minutes. **</b> Students: new file <code>example.js</code>, then <code>example.py</code> (Explorer → New File).</p>
     <ul>
-      <li><b>N</b> types the JS line, <b>N</b> the Python line, <b>R</b> runs both.</li>
+      <li><b>Type it live:</b> click in <code>example.js</code>, type the line, <b>Ctrl+S</b>. Click the left terminal, type <code>node example.js</code>, Enter. Same for Python on the right. (Backup: N, N, R.)</li>
+      <li>Show the ● on the tab before you save, and run once <b>unsaved</b>: nothing prints. "The terminal runs the saved file. Ctrl+S, every time."</li>
       <li>Point at the terminal: "<code>node example.js</code> and <code>python3 example.py</code>. Type those in your own terminal."</li>
       <li><code>console.log()</code> logs to the console where the code runs. <code>print()</code> prints to the terminal.</li>
     </ul>
@@ -203,7 +204,7 @@ blue 30</script>
   <aside class="notes">
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: new files <code>variables.js</code> and <code>variables.py</code>.</p>
     <ul>
-      <li>Steps 1–2: run (<b>R</b>) after the first pair so they see it work early.</li>
+      <li>Run after the first pair (type the commands in the terminals, or <b>R</b>) so they see it work early.</li>
       <li>Steps 3–4: "Same label, new contents. JS doesn't say <code>let</code> again."</li>
       <li>Steps 5–6: naming conventions. Commas in <code>console.log</code> / <code>print</code> print with a space between.</li>
     </ul>

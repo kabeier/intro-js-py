@@ -1,25 +1,27 @@
 # Live demo runbook: JavaScript and Python, code along
 
-**The story:** both lectures are code along. Students type every file in **their own VS Code** and run it in **their own terminal**. You present from the slides: the code slides are a built-in VS Code look-alike (the **codepad**) that types each chunk for you and really runs it. No app, no Claude prompt.
+**The story:** both lectures are code along. Students type every file in **their own VS Code** and run it in **their own terminal**. You present from the slides: each code slide is a real editor (Monaco, the editor inside VS Code) with a terminal you type commands into, and the code really runs. No app, no Claude prompt.
 - **Lecture 1 (JS & Python Fundamentals):** why both, runtimes, variables, primitive types, lists/objects/dicts, mutable vs immutable. Folder: `fundamentals/`.
 - **Lecture 2 (Functional Programming):** comparisons, if/else, loops, while, functions and return, arrow/lambda, filter/sort/map. Folder: `functional/`.
 
 ## The codepad (every "Code along" slide)
 
-| Key / button | What it does |
-|---|---|
-| **N** (or "Type next") | Types the next chunk into the JS or Python file. Press N again while it types = finish instantly |
-| **R** (or "Run") | Runs both files. Left terminal `$ node file.js`, right `$ python3 file.py` |
-| **Run** on a tab | Runs just that file |
-| Click into the code | Type yourself. **Ctrl+Enter** runs that file. **Esc** leaves the editor so N / R / arrows work again |
-| **All** | Shows the finished code at once (if you're behind) |
-| **Reset** | Back to the slide's start, terminals cleared |
-| Presenter window (**P**) | Shows the **next chunk** before it's typed, plus Type next / Run / Show all / Reset buttons |
+It's **Monaco, the editor inside VS Code**, plus a terminal you type into. Work in it exactly like VS Code:
 
-- **Real output:** JavaScript runs in the browser and prints like Node. Python is real CPython (3.12) loaded into the page. Every slide's output was checked against real `node` and `python3`.
-- **Python needs internet the first time** (it downloads ~10 MB, then it's cached). Status bar says "Python 3.12.7" when ready. Offline, it shows the recorded output for the slide's code and says so.
-- **Infinite loops are safe:** the codepad stops after 300 lines or a few seconds and says "^C … a loop that never ends?".
-- **A line that changes** (functions slide) lights up yellow for 3 seconds.
+| Do | How |
+|---|---|
+| Type code | Click in the editor. Autocomplete, hovers, Ctrl+/ comments, Ctrl+Z, multi-cursor all work |
+| Save | **Ctrl+S**. ● on the tab = unsaved. **The terminal runs the saved file**, like real VS Code (show this once: it's the #1 student bug) |
+| Run | Click the terminal under the file, type `node file.js` or `python3 file.py`, Enter. Or the **▶ Run** button on the tab, or **Ctrl+Enter** in the editor (saves + runs) |
+| Stop a program | Click the terminal, **Ctrl+C** (auto-stops after 20 s if you forget) |
+| Terminal extras | ↑ ↓ history · Tab completes file names · `ls`, `cat file`, `clear`, `python3 --version` |
+| Leave the editor | **Esc**, so → / ← change slides again (keys typed in the terminal never change slides) |
+| Backup: prepared code | **N** types the next prepared chunk (and saves). **R** types `node …` / `python3 …` into each terminal and runs. **All** = finished code, **Reset** = start over |
+| Presenter window (**P**) | Shows the next prepared chunk + Type next / Run / Show all / Reset buttons |
+
+- **Real output:** JavaScript runs in the browser and prints like Node. Python is real CPython 3.12 (Pyodide). Every slide's code was checked against real `node` and `python3`.
+- **Needs internet the first time:** Monaco (~3 MB) and Python (~10 MB) come from a CDN, then the browser caches them. Without internet, a simpler built-in editor appears, and Python shows the recorded output for the slide's code.
+- **Earlier files exist:** in the terminal, `node example.js` works on any later slide, like real files in the folder.
 
 ## Setup (once, before Lecture 1)
 
@@ -28,7 +30,7 @@ node --version          # any v18+
 python3 --version       # any 3.10+
 docker pull node:18-alpine && docker pull python:3.11-slim     # for the Docker slide (L1 slide 7)
 ```
-- Open both decks in **Chrome** once with internet on, so Python is cached.
+- Open both decks in **Chrome** once with internet on, so Monaco and Python are cached.
 - Have the **Code Lab** page open in a tab: students copy from there when they fall behind.
 - Know where the finished files are: `demo-kit/fundamentals/` and `demo-kit/functional/`.
 
@@ -46,7 +48,7 @@ docker pull node:18-alpine && docker pull python:3.11-slim     # for the Docker 
 | 2 (1) | Deck | Ask for 3 differences | "Same idea, two spellings." |
 | 3–4 (3–5) | Deck | Why both, runtime diagram | "Both are interpreted: a runtime reads your file line by line." |
 | 5 (7) | Your terminal | `mkdir fundamentals`, `cd fundamentals`, `code .`, both `--version`s | "Thumbs up when both print." |
-| 6 (9) | Codepad | N, N, R | "Now type `node example.js` in yours." |
+| 6 (9) | Codepad | Type the line, Ctrl+S, type `node example.js` in the terminal (backup: N, N, R) | "The ● means unsaved. The terminal runs the saved file." |
 | 7 (11) | Your terminal | The two `docker build … -f …` + `docker run --rm …` | "Switch languages by switching the base image." |
 | 8 (13) | Deck | Labeled box | "Use `let` for now." |
 | 9 (14) | Codepad | N N R, N N, N N R | "Same label, new contents." |
@@ -74,7 +76,7 @@ docker pull node:18-alpine && docker pull python:3.11-slim     # for the Docker 
 | 4 (6) | Codepad | N N R, N N R; then change `score` to 95 and Ctrl+Enter | "First true branch wins." |
 | 5 (11) | Deck | Flow diagram | "Strictest check first." |
 | 6 (13) | Codepad | N N R after each pair | "JS `of` = values, Python `in` = values." |
-| 7 (18) | Codepad | N N R, N N R; then delete `count++;`, R | "Ctrl+C in a real terminal." Then **Reset** |
+| 7 (18) | Codepad | Type or N/R; then delete `count++;`, Ctrl+S, run, **Ctrl+C** in the terminal | "Same Ctrl+C in your real terminal." Then Ctrl+Z, save |
 | 8 (22) | Deck | Which-loop table | "The trap: JS `for…in` on a list." |
 | 9 (23) | Activity page | 6 cards | "A, B or C in chat on go." |
 | 10 (29) | Codepad | 4 × N, R ("what is result?"), N N (yellow line), R | "Printing is not returning." |

@@ -66,7 +66,7 @@
 .vs-terms { flex: 1; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; min-height: 0; }
 .vs-term { margin: 0; padding: 4px 16px 10px; overflow: auto; font: var(--vs-tfont, 16px)/var(--vs-tlh, 22px) var(--mono); color: var(--vs-text); white-space: pre-wrap; word-break: break-word; border-left: 1px solid var(--vs-border); background: var(--vs-side); border-radius: 0; scrollbar-width: thin; scrollbar-color: #424242 transparent; }
 .vs-term:first-child { border-left: 0; }
-.vs-term > div { min-height: var(--vs-tlh, 22px); }
+.vs-term .tout > div { min-height: var(--vs-tlh, 22px); }
 .vs-term .cmd { color: #e7e7e7; }
 .vs-term .cmd::before { content: '$ '; color: #89d185; }
 .vs-term .err { color: #f48771; }
@@ -77,6 +77,19 @@
 .vs-status button:hover { background: rgb(255 255 255 / .28); }
 .vs-status .pystat.loading { opacity: .75; }
 .vs-status .pystat.off { color: #ffe76a; }
+
+
+/* Monaco hosts the editor; the simple editor (offline fallback) scrolls itself */
+.vscode .vs-code { position: relative; }
+.vscode.monaco .vs-code { display: block; overflow: hidden; }
+.vscode .monaco-editor .ln-flash-m { background: rgb(255 231 106 / .16); }
+.vs-tab .x.dirty { color: #e7e7e7; font-size: 18px; line-height: 1; }
+/* The terminal: output lines + a prompt you type into */
+.vs-term { cursor: text; outline: none; }
+.vs-term .tprompt { display: flex; align-items: baseline; min-height: var(--vs-tlh, 22px); }
+.vs-term .ps { color: #89d185; white-space: pre; }
+.vs-term .tin { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; padding: 0; margin: 0;
+  font: inherit; color: #e7e7e7; caret-color: #e7e7e7; }
 
 /* A slide that holds a codepad: small title, the window fills the rest */
 .slide.pad { padding: 58px 40px 56px; }
