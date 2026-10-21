@@ -117,3 +117,10 @@ body.playground .vscode { --vs-term: 34vh; }
 .pv .padbox pre { font: 15px/1.4 var(--mono); background: #0b0f17; color: #e9edf5; padding: 10px 12px; border-radius: 6px; margin: 8px 0; max-height: 260px; overflow: auto; white-space: pre; }
 .pv .padbox .row { display: flex; gap: 8px; flex-wrap: wrap; }
 .pv .padbox button { flex: 1; }
+
+/* Presenter notes: the "TYPE THIS" code for each code slide */
+.pv .notesbox .typecode { border-left: 4px solid #ffe76a; padding-left: 14px; margin: 10px 0 18px; }
+.pv .notesbox .typecode p.th { font: 700 15px var(--mono); color: #ffe76a; margin: 0 0 4px; letter-spacing: .04em; }
+.pv .notesbox .typecode p.tf { font-size: 17px; margin: 10px 0 3px; color: #c9d1dd; }
+.pv .notesbox .typecode pre { font: 19px/1.45 var(--mono); background: #0b0f17; color: #e9edf5; padding: 10px 14px; border-radius: 6px;
+  margin: 0; white-space: pre; overflow-x: auto; font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; user-select: all; }

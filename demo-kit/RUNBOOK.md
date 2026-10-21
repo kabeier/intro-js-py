@@ -19,6 +19,7 @@ It's **Monaco, the editor inside VS Code**, plus a terminal you type into. Work 
 | Backup: prepared code | **N** types the next prepared chunk (and saves). **R** types `node …` / `python3 …` into each terminal and runs. **All** = finished code, **Reset** = start over |
 | Presenter window (**P**) | Shows the next prepared chunk + Type next / Run / Show all / Reset buttons |
 
+- **Type from your notes:** every code slide's presenter notes (**P**) have a **TYPE THIS** block: each chunk in order, with its file. The slide editor does **not** auto-indent or auto-close brackets, so typing it exactly as written (spaces included) comes out exactly right. Enter is always a new line; **Tab** accepts an autocomplete suggestion. Click a block once to select it all, if you'd rather copy and paste. (Tell students: *their* VS Code adds the closing `}` and the indent for them.)
 - **Real output:** JavaScript runs in the browser and prints like Node. Python is real CPython 3.12 (Pyodide). Every slide's code was checked against real `node` and `python3`.
 - **Needs internet the first time:** Monaco (~3 MB) and Python (~10 MB) come from a CDN, then the browser caches them. Without internet, a simpler built-in editor appears, and Python shows the recorded output for the slide's code.
 - **Earlier files exist:** in the terminal, `node example.js` works on any later slide, like real files in the folder.

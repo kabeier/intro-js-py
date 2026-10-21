@@ -122,6 +122,14 @@ python3 --version</pre>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 2 minutes. **</b> Students: new file <code>example.js</code>, then <code>example.py</code> (Explorer → New File).</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>example.js</b> · part 1</p>
+    <pre>console.log(&quot;Hello from JavaScript&quot;);</pre>
+    <p class="tf"><b>example.py</b> · part 1</p>
+    <pre>print(&quot;Hello from Python&quot;)</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node example.js
+python3 example.py</pre>
+    </div>
     <ul>
       <li><b>Type it live:</b> click in <code>example.js</code>, type the line, <b>Ctrl+S</b>. Click the left terminal, type <code>node example.js</code>, Enter. Same for Python on the right. (Backup: N, N, R.)</li>
       <li>Show the ● on the tab before you save, and run once <b>unsaved</b>: nothing prints. "The terminal runs the saved file. Ctrl+S, every time."</li>
@@ -203,6 +211,34 @@ blue 30</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: new files <code>variables.js</code> and <code>variables.py</code>.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>variables.js</b> · part 1</p>
+    <pre>let userName = &quot;Alex&quot;;
+console.log(userName);</pre>
+    <p class="tf"><b>variables.py</b> · part 1</p>
+    <pre>user_name = &quot;Alex&quot;
+print(user_name)</pre>
+    <p class="tf"><b>variables.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>// change what&#x27;s in the box (no let the second time)
+userName = &quot;Sam&quot;;
+console.log(userName);</pre>
+    <p class="tf"><b>variables.py</b> · part 2 (add below, after a blank line)</p>
+    <pre># change what&#x27;s in the box
+user_name = &quot;Sam&quot;
+print(user_name)</pre>
+    <p class="tf"><b>variables.js</b> · part 3 (add below, after a blank line)</p>
+    <pre>// camelCase for variables, UPPER_CASE for constants
+let favoriteColor = &quot;blue&quot;;
+let MAX_USERS = 30;
+console.log(favoriteColor, MAX_USERS);</pre>
+    <p class="tf"><b>variables.py</b> · part 3 (add below, after a blank line)</p>
+    <pre># snake_case for variables, UPPER_CASE for constants
+favorite_color = &quot;blue&quot;
+MAX_USERS = 30
+print(favorite_color, MAX_USERS)</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node variables.js
+python3 variables.py</pre>
+    </div>
     <ul>
       <li>Run after the first pair (type the commands in the terminals, or <b>R</b>) so they see it work early.</li>
       <li>Steps 3–4: "Same label, new contents. JS doesn't say <code>let</code> again."</li>
@@ -251,6 +287,38 @@ None
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>primitives.js</code> and <code>primitives.py</code>.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>primitives.js</b> · part 1</p>
+    <pre>let message = &quot;Hello, world!&quot;;
+console.log(message);
+let count = 10;
+console.log(count);</pre>
+    <p class="tf"><b>primitives.py</b> · part 1</p>
+    <pre>message = &quot;Hello, world!&quot;
+print(message)
+count = 10
+print(count)</pre>
+    <p class="tf"><b>primitives.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>let isActive = true;
+console.log(isActive);
+let data = null;
+console.log(data);</pre>
+    <p class="tf"><b>primitives.py</b> · part 2 (add below, after a blank line)</p>
+    <pre>is_active = True
+print(is_active)
+data = None
+print(data)</pre>
+    <p class="tf"><b>primitives.js</b> · part 3 (add below, after a blank line)</p>
+    <pre>let price = 9.99;
+console.log(typeof price, typeof count);
+let value;
+console.log(value);</pre>
+    <p class="tf"><b>primitives.py</b> · part 3 (add below, after a blank line)</p>
+    <pre>price = 9.99
+print(type(price), type(count))</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node primitives.js
+python3 primitives.py</pre>
+    </div>
     <ul>
       <li><b>Strings</b> use quotes. We use <b>double quotes</b>, so an apostrophe (<code>"it's"</code>) never breaks it.</li>
       <li><b>Booleans:</b> <code>true</code> in JS, <code>True</code> in Python. The capital letter is the difference.</li>
@@ -345,6 +413,38 @@ Alex
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>collections.js</code> and <code>collections.py</code>.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>collections.js</b> · part 1</p>
+    <pre>// idxs         0       1       2
+let colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
+console.log(colors);
+console.log(colors[1]);</pre>
+    <p class="tf"><b>collections.py</b> · part 1</p>
+    <pre># idxs      0       1        2
+colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;]
+print(colors)
+print(colors[1])</pre>
+    <p class="tf"><b>collections.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>let user = { name: &quot;Alex&quot;, age: 30 };
+console.log(user);
+console.log(user.name);</pre>
+    <p class="tf"><b>collections.py</b> · part 2 (add below, after a blank line)</p>
+    <pre>user = {&quot;name&quot;: &quot;Alex&quot;, &quot;age&quot;: 30}
+print(user)
+print(user.get(&quot;name&quot;))</pre>
+    <p class="tf"><b>collections.js</b> · part 3 (add below, after a blank line)</p>
+    <pre>// bracket notation: add, then remove
+user[&quot;city&quot;] = &quot;Chicago&quot;;
+delete user.age;
+console.log(user);</pre>
+    <p class="tf"><b>collections.py</b> · part 3 (add below, after a blank line)</p>
+    <pre># bracket notation: add, then remove
+user[&quot;city&quot;] = &quot;Chicago&quot;
+del user[&quot;age&quot;]
+print(user)</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node collections.js
+python3 collections.py</pre>
+    </div>
     <ul>
       <li>Lists hold any mix of types. Node prints strings in single quotes: that's just how it displays them.</li>
       <li><b>Dot</b> notation is JS-only (<code>user.name</code>). Python uses <code>user.get("name")</code> or <code>user["name"]</code>.</li>
@@ -391,6 +491,40 @@ alex ALEX
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 3 minutes. **</b> Students: <code>mutable.js</code> and <code>mutable.py</code>.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>mutable.js</b> · part 1</p>
+    <pre>// a list is mutable: it changes in place
+let colors = [&quot;red&quot;, &quot;green&quot;];
+colors.push(&quot;blue&quot;);
+console.log(colors);</pre>
+    <p class="tf"><b>mutable.py</b> · part 1</p>
+    <pre># a list is mutable: it changes in place
+colors = [&quot;red&quot;, &quot;green&quot;]
+colors.append(&quot;blue&quot;)
+print(colors)</pre>
+    <p class="tf"><b>mutable.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>// a string is immutable: you get a NEW string
+let name = &quot;alex&quot;;
+let loud = name.toUpperCase();
+console.log(name, loud);</pre>
+    <p class="tf"><b>mutable.py</b> · part 2 (add below, after a blank line)</p>
+    <pre># a string is immutable: you get a NEW string
+name = &quot;alex&quot;
+loud = name.upper()
+print(name, loud)</pre>
+    <p class="tf"><b>mutable.js</b> · part 3 (add below, after a blank line)</p>
+    <pre>// the bug: two labels, one list
+let copy = colors;
+copy.push(&quot;pink&quot;);
+console.log(colors);</pre>
+    <p class="tf"><b>mutable.py</b> · part 3 (add below, after a blank line)</p>
+    <pre># the bug: two labels, one list
+copy = colors
+copy.append(&quot;pink&quot;)
+print(colors)</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node mutable.js
+python3 mutable.py</pre>
+    </div>
     <ul>
       <li>Before step 5, ask chat: <b>"What will colors print?"</b> Most say 3 colors. It's 4.</li>
       <li>"<code>=</code> doesn't copy a list. It sticks a second label on the same box." Next slide shows it.</li>

@@ -345,6 +345,10 @@ def __cp_run(fname):
       scrollbar: { verticalScrollbarSize: 10, horizontalScrollbarSize: 10, alwaysConsumeMouseWheel: false },
       bracketPairColorization: { enabled: true }, guides: { bracketPairs: false, indentation: true },
       'semanticHighlighting.enabled': true, stickyScroll: { enabled: false }, contextmenu: true,
+      // Type-what-you-see: typing a block from the presenter notes comes out exactly as written
+      autoIndent: 'none', autoClosingBrackets: 'never', autoClosingQuotes: 'never', autoClosingDelete: 'never',
+      autoClosingOvertype: 'never', autoSurround: 'never', formatOnType: false, formatOnPaste: false,
+      acceptSuggestionOnEnter: 'off', tabCompletion: 'off',
     })
     ed.addCommand(m.KeyMod.CtrlCmd | m.KeyCode.KeyS, () => hooks.save())
     ed.addCommand(m.KeyMod.CtrlCmd | m.KeyCode.Enter, () => hooks.run())

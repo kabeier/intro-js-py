@@ -69,6 +69,27 @@ False</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 3 minutes. **</b> Students: <code>compare.js</code>, <code>compare.py</code>.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>compare.js</b> · part 1</p>
+    <pre>let age = 18;
+console.log(age &gt;= 18);
+console.log(age &lt; 18);
+console.log(age === 18, age !== 21);</pre>
+    <p class="tf"><b>compare.py</b> · part 1</p>
+    <pre>age = 18
+print(age &gt;= 18)
+print(age &lt; 18)
+print(age == 18, age != 21)</pre>
+    <p class="tf"><b>compare.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>// === also checks the type. Use it.
+console.log(5 == &quot;5&quot;);
+console.log(5 === &quot;5&quot;);</pre>
+    <p class="tf"><b>compare.py</b> · part 2 (add below, after a blank line)</p>
+    <pre># Python&#x27;s == never mixes types
+print(5 == &quot;5&quot;)</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node compare.js
+python3 compare.py</pre>
+    </div>
     <ul>
       <li>Operators: <code>==</code> / <code>===</code>, <code>!=</code> / <code>!==</code>, <code>&gt; &lt; &gt;= &lt;=</code>. Every one gives a boolean.</li>
       <li>Step 3: <code>5 == "5"</code> is <b>true</b> in JS (it converts the type first). <code>===</code> is <b>false</b>. "In JS, always use <b>===</b>."</li>
@@ -123,6 +144,50 @@ cook a meal</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>conditionals.js</code>, <code>conditionals.py</code>.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>conditionals.js</b> · part 1</p>
+    <pre>let score = 85;
+
+if (score &gt;= 90) {
+  console.log(&quot;Pass with Honors&quot;);
+} else if (score &gt;= 70) {
+  console.log(&quot;Pass&quot;);
+} else {
+  console.log(&quot;Fail&quot;);
+}</pre>
+    <p class="tf"><b>conditionals.py</b> · part 1</p>
+    <pre>score = 85
+
+if score &gt;= 90:
+    print(&quot;Pass with Honors&quot;)
+elif score &gt;= 70:
+    print(&quot;Pass&quot;)
+else:
+    print(&quot;Fail&quot;)</pre>
+    <p class="tf"><b>conditionals.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>// AND: both must be true
+let age = 21;
+let hasId = true;
+
+if (age &gt;= 21 &amp;&amp; hasId) {
+  console.log(&quot;This adult can drink&quot;);
+} else if (age &gt;= 18) {
+  console.log(&quot;This is an adult but can&#x27;t drink&quot;);
+} else {
+  console.log(&quot;This person is a minor&quot;);
+}</pre>
+    <p class="tf"><b>conditionals.py</b> · part 2 (add below, after a blank line)</p>
+    <pre># OR: one of the two is enough
+hungry = False
+bored = True
+
+if hungry or bored:
+    print(&quot;cook a meal&quot;)
+else:
+    print(&quot;You don&#x27;t need to eat&quot;)</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node conditionals.js
+python3 conditionals.py</pre>
+    </div>
     <ul>
       <li>JS: condition in <b>( )</b>, block in <b>{ }</b>. Python: a <b>colon</b> and <b>4-space indent</b>. <code>elif</code> = else if.</li>
       <li>Step 3 is the curriculum's AND example (JS); step 4 its OR example (Python). <code>&amp;&amp;</code> / <code>and</code>, <code>||</code> / <code>or</code>.</li>
@@ -191,6 +256,41 @@ blue
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>loops.js</code>, <code>loops.py</code>. Run after each pair.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>loops.js</b> · part 1</p>
+    <pre>let colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
+
+// by value: for...of
+for (let color of colors) {
+  console.log(color);
+}</pre>
+    <p class="tf"><b>loops.py</b> · part 1</p>
+    <pre>colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;]
+
+# by value: for...in
+for color in colors:
+    print(color)</pre>
+    <p class="tf"><b>loops.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>// by index
+for (let i = 0; i &lt; colors.length; i++) {
+  console.log(i, colors[i]);
+}</pre>
+    <p class="tf"><b>loops.py</b> · part 2 (add below, after a blank line)</p>
+    <pre># by index
+for idx in range(len(colors)):
+    print(idx, colors[idx])</pre>
+    <p class="tf"><b>loops.js</b> · part 3 (add below, after a blank line)</p>
+    <pre>// both
+for (const [idx, color] of colors.entries()) {
+  console.log(idx, color);
+}</pre>
+    <p class="tf"><b>loops.py</b> · part 3 (add below, after a blank line)</p>
+    <pre># both
+for idx, color in enumerate(colors):
+    print(idx, color)</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node loops.js
+python3 loops.py</pre>
+    </div>
     <ul>
       <li><b>By value</b> is the most common. JS is for <b>of</b>; Python is for <b>in</b>.</li>
       <li><b>By index</b>, JS: <code>let i = 0</code> start · <code>i &lt; colors.length</code> keep going while true · <code>i++</code> add 1 after each pass.</li>
@@ -243,6 +343,37 @@ age 30
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>more-loops.js</code>, <code>more-loops.py</code>.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>more-loops.js</b> · part 1</p>
+    <pre>let user = { name: &quot;Alex&quot;, age: 30 };
+
+for (let key in user) {
+  console.log(key);
+}
+for (let [key, value] of Object.entries(user)) {
+  console.log(key, value);
+}</pre>
+    <p class="tf"><b>more-loops.py</b> · part 1</p>
+    <pre>user = {&quot;name&quot;: &quot;Alex&quot;, &quot;age&quot;: 30}
+
+for key in user:
+    print(key)
+for key, value in user.items():
+    print(key, value)</pre>
+    <p class="tf"><b>more-loops.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>let count = 0;
+while (count &lt; 3) {
+  console.log(count);
+  count++;
+}</pre>
+    <p class="tf"><b>more-loops.py</b> · part 2 (add below, after a blank line)</p>
+    <pre>count = 0
+while count &lt; 3:
+    print(count)
+    count += 1</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node more-loops.js
+python3 more-loops.py</pre>
+    </div>
     <ul>
       <li>Objects: JS <code>for…in</code> gives <b>keys</b>; <code>Object.entries</code> gives pairs. Python: <code>.items()</code>. Used all the time for API responses.</li>
       <li><b>while</b>: for when you don't know how many times ahead.</li>
@@ -353,6 +484,44 @@ Good Afternoon Sam</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>functions.js</code>, <code>functions.py</code>.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>functions.js</b> · part 1</p>
+    <pre>function sayHi() {
+  console.log(&quot;Good Afternoon&quot;);
+}
+
+sayHi();
+sayHi();</pre>
+    <p class="tf"><b>functions.py</b> · part 1</p>
+    <pre>def say_hi():
+    print(&quot;Good Afternoon&quot;)
+
+say_hi()
+say_hi()</pre>
+    <p class="tf"><b>functions.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>// name is a parameter; &quot;Alice&quot; is the argument
+function greet(name) {
+  console.log(&quot;Good Afternoon &quot; + name);
+}
+
+greet(&quot;Alice&quot;);
+let result = greet(&quot;Sam&quot;);
+console.log(result);</pre>
+    <p class="tf"><b>functions.py</b> · part 2 (add below, after a blank line)</p>
+    <pre># name is a parameter; &quot;Alice&quot; is the argument
+def greet(name):
+    print(&quot;Good Afternoon &quot; + name)
+
+greet(&quot;Alice&quot;)
+result = greet(&quot;Sam&quot;)
+print(result)</pre>
+    <p class="tf">Save + run <code>node functions.js</code> first. Then in <b>functions.js</b> change line 10 to:</p>
+    <pre>  return &quot;Good Afternoon &quot; + name;</pre>
+    <p class="tf">Save + run <code>python3 functions.py</code> first. Then in <b>functions.py</b> change line 9 to:</p>
+    <pre>    return &quot;Good Afternoon &quot; + name</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node functions.js
+python3 functions.py</pre>
+    </div>
     <ul>
       <li><b>Declare</b> (JS <code>function</code>) / <b>define</b> (Python <code>def</code>). Nothing happens until you <b>call</b> it.</li>
       <li>DRY: Don't Repeat Yourself. Two calls, two prints, one definition.</li>
@@ -400,6 +569,32 @@ print(sorted_nums, nums)</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>functional.js</code>, <code>functional.py</code>.</p>
+    <div class="typecode"><p class="th">TYPE THIS, in order</p>
+    <p class="tf"><b>functional.js</b> · part 1</p>
+    <pre>const multiply = (a, b) =&gt; a * b;
+console.log(multiply(3, 4));</pre>
+    <p class="tf"><b>functional.py</b> · part 1</p>
+    <pre>multiply = lambda a, b: a * b
+print(multiply(3, 4))</pre>
+    <p class="tf"><b>functional.js</b> · part 2 (add below, after a blank line)</p>
+    <pre>let nums = [3, 1, 4, 2];
+let evens = nums.filter(n =&gt; n % 2 === 0);
+let doubled = nums.map(n =&gt; n * 2);
+console.log(evens, doubled, nums);</pre>
+    <p class="tf"><b>functional.py</b> · part 2 (add below, after a blank line)</p>
+    <pre>nums = [3, 1, 4, 2]
+evens = list(filter(lambda n: n % 2 == 0, nums))
+doubled = [n * 2 for n in nums]
+print(evens, doubled, nums)</pre>
+    <p class="tf"><b>functional.js</b> · part 3 (add below, after a blank line)</p>
+    <pre>nums.sort((a, b) =&gt; a - b);
+console.log(nums);</pre>
+    <p class="tf"><b>functional.py</b> · part 3 (add below, after a blank line)</p>
+    <pre>sorted_nums = sorted(nums)
+print(sorted_nums, nums)</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node functional.js
+python3 functional.py</pre>
+    </div>
     <ul>
       <li><b>Arrow</b> (JS) / <b>lambda</b> (Python): a one-line function. Used inside filter, map and sort.</li>
       <li><code>n % 2 === 0</code>: remainder 0 means even.</li>
