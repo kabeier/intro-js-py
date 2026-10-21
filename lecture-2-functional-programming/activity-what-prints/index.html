@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What prints? · Functional Programming</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --red:#c8372d; --sticky:#ffe76a; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: var(--ink); display: grid; grid-template-rows: auto auto 1fr auto;
+    background: var(--paper) linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 40px 40px,
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 40px 40px; }
+  header { padding: 20px 36px 0; display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
+  h1 { font: 800 40px 'Bricolage Grotesque', sans-serif; margin: 0; letter-spacing: -0.02em; }
+  .count { font: 700 20px 'JetBrains Mono', monospace; color: var(--muted); }
+  .bank { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 36px 0; }
+  .bank button { font: 700 22px 'JetBrains Mono', monospace; background: #fff; border: 2px solid var(--ink); border-radius: 6px; padding: 8px 18px; cursor: pointer; color: var(--ink); }
+  .bank button.hit { background: var(--green); border-color: var(--green); color: #fff; }
+  .bank button.miss { background: var(--red); border-color: var(--red); color: #fff; }
+  .bank .legend { align-self: center; font-size: 16px; color: var(--muted); margin-left: 8px; }
+  .stagearea { display: grid; place-items: center; padding: 20px 36px; }
+  .card { width: min(1100px, 100%); background: var(--sticky); padding: 48px 56px; transform: rotate(-1deg);
+    box-shadow: 0 18px 30px -12px rgb(27 34 48 / 0.35); }
+  .who { font: 700 18px 'JetBrains Mono', monospace; margin-bottom: 14px; }
+  .q { font: 700 clamp(26px, 3.2vw, 44px)/1.2 'Bricolage Grotesque', sans-serif; letter-spacing: -0.01em; }
+  .q small { display: block; font: 400 clamp(20px, 2vw, 28px)/1.45 'Atkinson Hyperlegible', sans-serif; margin-top: 18px; }
+  code { font: 600 .9em 'JetBrains Mono', monospace; }
+  .a { margin-top: 30px; background: #fff; border-left: 10px solid var(--green); padding: 18px 24px; font-size: clamp(20px, 2vw, 28px); line-height: 1.4; display: none; }
+  .a b { display: block; font: 800 clamp(28px, 3vw, 42px) 'Bricolage Grotesque', sans-serif; color: var(--green); }
+  .card.revealed .a { display: block; }
+  footer { padding: 0 36px 18px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font: 500 14px 'JetBrains Mono'; color: var(--muted); }
+  footer button { font: 700 16px 'Atkinson Hyperlegible'; padding: 10px 18px; border-radius: 8px; border: 2px solid var(--ink); background: #fff; cursor: pointer; }
+  footer button.go { background: var(--blue); color: #fff; border-color: var(--blue); }
+  button:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  .card { min-width: 0; } .q pre { -webkit-overflow-scrolling: touch; } @media (max-width: 600px) { .card { padding: 24px 18px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>What prints?</h1>
+  <span class="count" id="count"></span>
+</header>
+<div class="bank" id="bank">
+  <!-- One button per possible answer. A card's answer must match a button's text exactly. -->
+  <button type="button">A</button><button type="button">B</button><button type="button">C</button>
+  <span class="legend">Two spaces between items = separate lines of output.</span>
+</div>
+<div class="stagearea">
+  <div class="card" id="card">
+    <div class="who">Read the code · A, B or C in chat on "go"</div>
+    <div class="q" id="q"></div>
+    <div class="a" id="a"></div>
+  </div>
+</div>
+<footer>
+  <button id="prev">← Back</button><button class="go" id="reveal">Reveal (space)</button><button id="next">Next →</button>
+  <span>← → to move · space to reveal · first 6 cards are the core set · last card is a bonus</span>
+</footer>
+<script>
+  // [request, answer, why]
+  const Q = [
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">JavaScript</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">console.log(5 === \"5\");</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;true</li><li><b>B</b> &nbsp;false</li><li><b>C</b> &nbsp;error</li></ul>",
+        "B",
+        "<code>===</code> checks the value <b>and</b> the type: a number is never a string. (<code>5 == \"5\"</code> would be <code>true</code>.)"
+    ],
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">Python</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">print(5 == \"5\")</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;False</li><li><b>B</b> &nbsp;True</li><li><b>C</b> &nbsp;error</li></ul>",
+        "A",
+        "Python's <code>==</code> never converts types, so a number and a string are never equal."
+    ],
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">Python</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">score = 75\n\nif score &gt;= 90:\n    print(\"Pass with Honors\")\nelif score &gt;= 70:\n    print(\"Pass\")\nelse:\n    print(\"Fail\")</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;Pass with Honors</li><li><b>B</b> &nbsp;Pass, then Fail</li><li><b>C</b> &nbsp;Pass</li></ul>",
+        "C",
+        "75 fails the first check and passes the second. The first true branch wins; the rest are skipped."
+    ],
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">JavaScript</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">let colors = [\"red\", \"blue\"];\nfor (let color of colors) {\n  console.log(color);\n}</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;red  blue</li><li><b>B</b> &nbsp;0  1</li><li><b>C</b> &nbsp;[ 'red', 'blue' ]</li></ul>",
+        "A",
+        "<code>for…of</code> gives the <b>values</b>, one per line."
+    ],
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">JavaScript</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">let colors = [\"red\", \"blue\"];\nfor (let i in colors) {\n  console.log(i);\n}</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;red  blue</li><li><b>B</b> &nbsp;error</li><li><b>C</b> &nbsp;0  1</li></ul>",
+        "C",
+        "The trap: JS <code>for…in</code> gives the <b>indexes</b> (keys). Use <code>for…of</code> for values."
+    ],
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">Python</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">for i in range(3):\n    print(i)</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;0  1  2</li><li><b>B</b> &nbsp;1  2  3</li><li><b>C</b> &nbsp;0  1  2  3</li></ul>",
+        "A",
+        "<code>range(3)</code> starts at 0 and stops <b>before</b> 3."
+    ],
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">Python</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">def greet(name):\n    print(\"Hi \" + name)\n\nresult = greet(\"Sam\")\nprint(result)</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;Hi Sam</li><li><b>B</b> &nbsp;None</li><li><b>C</b> &nbsp;Hi Sam  then  None</li></ul>",
+        "C",
+        "The function prints, but returns nothing, so <code>result</code> is <code>None</code>. Printing is not returning."
+    ],
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">JavaScript</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">let nums = [3, 1, 2];\nlet sortedNums = nums.sort((a, b) =&gt; a - b);\nconsole.log(nums);</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;[ 3, 1, 2 ]</li><li><b>B</b> &nbsp;[ 1, 2, 3 ]</li><li><b>C</b> &nbsp;undefined</li></ul>",
+        "B",
+        "JS <code>.sort()</code> is destructive: it sorts <code>nums</code> itself."
+    ],
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">Python</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">nums = [3, 1, 2]\nsorted_nums = sorted(nums)\nprint(nums)</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;[3, 1, 2]</li><li><b>B</b> &nbsp;[1, 2, 3]</li><li><b>C</b> &nbsp;None</li></ul>",
+        "A",
+        "<code>sorted()</code> is constructive: a new list. <code>nums</code> is untouched."
+    ],
+    [
+        "<span style=\"font:600 18px JetBrains Mono,monospace;color:#5b6577\">Bonus · JavaScript</span><pre style=\"font:500 clamp(20px,2.3vw,30px)/1.4 JetBrains Mono,monospace;background:#1b2230;color:#e9edf5;padding:16px 22px;border-radius:8px;white-space:pre;text-align:left;margin:0 0 14px;overflow-x:auto;max-width:100%;box-sizing:border-box\">let nums = [10, 9, 1];\nnums.sort();\nconsole.log(nums);</pre><ul style=\"font:clamp(18px,1.9vw,26px)/1.5 JetBrains Mono,monospace;margin:0;padding-left:0;list-style:none;text-align:left\"><li><b>A</b> &nbsp;[ 1, 9, 10 ]</li><li><b>B</b> &nbsp;[ 10, 9, 1 ]</li><li><b>C</b> &nbsp;[ 1, 10, 9 ]</li></ul>",
+        "C",
+        "With no compare function JS sorts as <b>text</b>: \"10\" comes before \"9\". Use <code>(a, b) =&gt; a - b</code>."
+    ]
+  ]
+  let i = 0
+  const $ = (s) => document.querySelector(s)
+  const btns = [...document.querySelectorAll('#bank button')]
+  function draw() {
+    $('#card').classList.remove('revealed')
+    $('#q').innerHTML = Q[i][0]
+    $('#a').innerHTML = `<b>${Q[i][1]}</b>${Q[i][2]}`
+    $('#count').textContent = `${i + 1} / ${Q.length}`
+    btns.forEach((s) => s.className = '')
+  }
+  function reveal(picked) {
+    $('#card').classList.add('revealed')
+    btns.forEach((s) => s.className = s.textContent === Q[i][1] ? 'hit' : (s.textContent === picked ? 'miss' : ''))
+  }
+  btns.forEach((b) => b.onclick = () => reveal(b.textContent))
+  const go = (n) => { i = Math.min(Math.max(n, 0), Q.length - 1); draw() }
+  $('#prev').onclick = () => go(i - 1); $('#next').onclick = () => go(i + 1); $('#reveal').onclick = () => reveal()
+  addEventListener('keydown', (e) => {
+    if (e.key === ' ') { e.preventDefault(); reveal() }
+    if (e.key === 'ArrowRight') go(i + 1)
+    if (e.key === 'ArrowLeft') go(i - 1)
+  })
+  draw()
+</script>
+</body>
+</html>

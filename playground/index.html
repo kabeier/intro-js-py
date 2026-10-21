@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Playground</title>
+<link rel="stylesheet" href="../shared/deck.css">
+<link rel="stylesheet" href="../shared/codepad.css">
+</head>
+<body class="playground">
+<div class="bar">
+  <a href="../">← Class site</a>
+  <b>Code Playground</b>
+  <span>Type JavaScript on the left, Python on the right. <b>Run</b> (or Ctrl+Enter) runs it. Nothing leaves the page.</span>
+  <span>Python takes a few seconds to load the first time.</span>
+</div>
+<div class="vscode" data-folder="playground">
+<script type="text/plain" data-file="scratch.js" data-start>// JavaScript: run with  node scratch.js
+let userName = "Alex";
+console.log("Hello, " + userName);
+</script>
+<script type="text/plain" data-file="scratch.py" data-start># Python: run with  python3 scratch.py
+user_name = "Alex"
+print("Hello, " + user_name)
+</script>
+</div>
+<script src="../shared/codepad.js"></script>
+</body>
+</html>

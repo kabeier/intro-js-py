@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JavaScript and Python</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root { --paper:#f4f6f9; --grid:#dce3ee; --ink:#1b2230; --muted:#5b6577; --blue:#2552c9; --green:#13795b; --sticky:#ffe76a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Atkinson Hyperlegible', system-ui, sans-serif; color: var(--ink); font-size: 18px; line-height: 1.5;
+    background: var(--paper) linear-gradient(var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px,
+                linear-gradient(90deg, var(--grid) 1px, transparent 1px) -1px -1px / 40px 40px; }
+  main { max-width: 1120px; margin: 0 auto; padding: 64px 28px 80px; }
+  h1 { font: 800 clamp(44px, 7vw, 80px)/0.95 'Bricolage Grotesque', sans-serif; letter-spacing: -0.03em; margin: 0 0 16px; }
+  .lede { max-width: 60ch; color: var(--muted); font-size: 20px; margin: 0 0 48px; }
+  .lectures { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
+  section { background: #fff; border: 2px solid var(--ink); border-radius: 4px; padding: 28px; }
+  .num { font: 800 64px/1 'Bricolage Grotesque', sans-serif; color: var(--blue); }
+  h2 { font: 800 30px/1.1 'Bricolage Grotesque', sans-serif; margin: 8px 0 6px; letter-spacing: -0.01em; }
+  section > p { margin: 0 0 22px; color: var(--muted); }
+  a.slides { display: block; background: var(--sticky); color: var(--ink); text-decoration: none; padding: 20px 22px; margin-bottom: 18px;
+    transform: rotate(-0.8deg); box-shadow: 0 10px 18px -10px rgb(27 34 48 / 0.45); transition: transform .15s; }
+  a.slides:hover, a.slides:focus-visible { transform: rotate(0deg) translateY(-2px); }
+  a.slides b { display: block; font: 800 26px 'Bricolage Grotesque', sans-serif; }
+  ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  ol a { display: block; padding: 14px 16px; border: 2px solid var(--grid); border-radius: 4px; color: var(--ink); text-decoration: none; }
+  ol a:hover, ol a:focus-visible { border-color: var(--blue); }
+  ol a b { color: var(--blue); }
+  ol a span { display: block; color: var(--muted); font-size: 16px; }
+  h3 { font: 800 26px 'Bricolage Grotesque', sans-serif; margin: 56px 0 14px; }
+  .kit { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  .kit a { background: #fff; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .gallery figure { margin: 0; background: #fff; border: 2px solid var(--grid); border-radius: 4px; padding: 8px; }
+  .gallery img { width: 100%; aspect-ratio: 16/10; object-fit: cover; object-position: top; display: block; }
+  .gallery figcaption { font-size: 15px; padding: 6px 2px 0; display: flex; justify-content: space-between; gap: 8px; }
+  .gallery figcaption a { color: var(--blue); }
+  .install { margin-bottom: 20px; }
+  .install h4 { font: 800 21px 'Bricolage Grotesque', sans-serif; margin: 28px 0 6px; }
+  .install h4:first-child { margin-top: 0; }
+  .install .steps { display: block; list-style: decimal; padding-left: 1.4em; margin: 0 0 14px; }
+  .install .steps li::marker { font-weight: 700; color: var(--blue); } .install .steps li { margin-bottom: 12px; }
+  .os { display: grid; grid-template-columns: 1fr 1fr; gap: 0 28px; }
+  .os h5 { font: 700 17px 'Bricolage Grotesque', sans-serif; margin: 6px 0 4px; }
+  @media (max-width: 760px) { .os { grid-template-columns: 1fr; } }
+  .install code { font-size: 0.9em; background: #e8ecf3; padding: 1px 5px; border-radius: 3px; }
+  .cmdwrap { position: relative; margin: 8px 0 6px; }
+  pre.cmd { background: var(--ink); color: #fff; padding: 16px 18px; padding-right: 90px; border-radius: 4px; overflow-x: auto; margin: 0; font-size: 15px; }
+  pre.cmd code { background: none; padding: 0; }
+  .copy { position: absolute; top: 10px; right: 10px; font: 700 14px 'Atkinson Hyperlegible'; padding: 6px 12px; border-radius: 4px; border: 0; background: var(--sticky); color: var(--ink); cursor: pointer; }
+  .fail { margin: 0 0 8px; padding: 14px 18px; background: var(--sticky); transform: rotate(-0.4deg); }
+  .install .steps a, details a { display: inline; padding: 0; border: 0; color: var(--blue); text-decoration: underline; }
+  details { margin: 6px 0 14px; }
+  summary { cursor: pointer; font-weight: 700; color: var(--blue); }
+  footer { margin-top: 56px; color: var(--muted); font-size: 16px; }
+  a:focus-visible, summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { a.slides { transition: none; } }
+  .install table { border-collapse: collapse; background: #fff; margin: 10px 0; font-size: 15px; display: block; overflow-x: auto; max-width: 100%; }
+  .install th, .install td { border: 1px solid var(--grid); padding: 6px 10px; text-align: left; }
+</style>
+</head>
+<body>
+<main>
+  <h1>JavaScript and Python</h1>
+  <p class="lede">Two of the most used languages in the world, side by side. Variables and data types, then decisions, loops and functions, written once in JavaScript and once in Python. Bring a laptop with VS Code: you type every line along with the slides. Everything opens in a new tab, so keep this page open as your home base.</p>
+
+  <div class="lectures">
+    <section>
+      <div class="num">1</div>
+      <h2>JS &amp; Python Fundamentals</h2>
+      <p>Why both languages, runtimes, variables and naming, primitive types, lists, objects and dicts, and mutable vs immutable. You make 10 small files and run each one.</p>
+      <a class="slides" href="lecture-1-js-python-fundamentals/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, F for fullscreen</a>
+      <ol>
+        <li><a href="lecture-1-js-python-fundamentals/code-lab/" target="_blank" rel="noopener"><b>Code Lab 1</b><span>Every file from the lecture with Copy buttons, what it prints, and a "when something breaks" table.</span></a></li>
+        <li><a href="lecture-1-js-python-fundamentals/activity-js-or-python/" target="_blank" rel="noopener"><b>Activity: JS, Python, or both?</b><span>One line of code. Which language runs it?</span></a></li>
+      </ol>
+    </section>
+    <section>
+      <div class="num">2</div>
+      <h2>Functional Programming</h2>
+      <p>Comparison operators, if / else, loops over lists and dicts, while, functions with parameters and return, then arrow functions, lambdas, filter, sort and map.</p>
+      <a class="slides" href="lecture-2-functional-programming/slides.html" target="_blank" rel="noopener"><b>Open the slides</b>Arrow keys to move, F for fullscreen</a>
+      <ol>
+        <li><a href="lecture-2-functional-programming/code-lab/" target="_blank" rel="noopener"><b>Code Lab 2</b><span>Six pairs of files: compare, conditionals, loops, more loops, functions, functional tools.</span></a></li>
+        <li><a href="lecture-2-functional-programming/activity-what-prints/" target="_blank" rel="noopener"><b>Activity: What prints?</b><span>Read the code, pick A, B or C.</span></a></li>
+      </ol>
+    </section>
+  </div>
+
+  <ol class="kit" style="margin-top:0">
+    <li><a href="playground/" target="_blank" rel="noopener"><b>Code Playground</b><span>JavaScript and Python running in your browser. Try any snippet, no install.</span></a></li>
+  </ol>
+
+  <h3 id="homework">Homework Part I: fundamentals</h3>
+  <section class="install">
+    <p><b>In this order:</b> (1) <b>Code Lab 1</b> on your own laptop, (2) 50 steps of your current <b>FreeCodeCamp</b> certification.</p>
+
+    <h4>1 · Both runtimes work</h4>
+    <ol class="steps">
+      <li>In a terminal:
+        <div class="cmdwrap"><pre class="cmd"><code>node --version
+python3 --version</code></pre><button type="button" class="copy">Copy</button></div>
+        Windows: <code>python --version</code>.
+        <p class="fail"><b>If this breaks:</b> "command not found" = not installed. Use the Docker commands in <a href="lecture-1-js-python-fundamentals/code-lab/#nodocker" target="_blank" rel="noopener">Code Lab 1</a>, or the <a href="playground/" target="_blank" rel="noopener">Playground</a>.</p></li>
+    </ol>
+
+    <h4>2 · Code Lab 1</h4>
+    <ol class="steps">
+      <li>Every section of <a href="lecture-1-js-python-fundamentals/code-lab/" target="_blank" rel="noopener">Code Lab 1</a> in your <code>fundamentals</code> folder. Type it, run it, and check the output matches.</li>
+      <li>Then change something on purpose (a value, a name, <code>true</code> → <code>True</code>) and predict the output before you run it.</li>
+    </ol>
+  </section>
+
+  <h3>Homework Part II: algorithm assignments</h3>
+  <section class="install">
+    <p><b>In this order</b>, top to bottom (each is a little harder): (1) <a href="https://github.com/Code-Platoon-Assignments/algo-factorial" target="_blank" rel="noopener"><b>Factorial</b></a> (JS), (2) <a href="https://github.com/Code-Platoon-Assignments/algo-roman-numerals" target="_blank" rel="noopener"><b>Roman Numerals</b></a> (JS), (3) <a href="https://github.com/Code-Platoon-Assignments/algo-99-bottles-py" target="_blank" rel="noopener"><b>99 Bottles</b></a> (Python), (4) <a href="https://github.com/Code-Platoon-Assignments/algo-factorial-py" target="_blank" rel="noopener"><b>Factorial</b></a> (Python), (5) <a href="https://github.com/Code-Platoon-Assignments/algo-fibonacci-py" target="_blank" rel="noopener"><b>Fibonacci</b></a> (Python). Then 50 steps of your current <b>FreeCodeCamp</b> certification.</p>
+
+    <h4>3 · Get each assignment</h4>
+    <ol class="steps">
+      <li>Open the assignment on GitHub and click <b>Fork</b> (top right) → <b>Create fork</b>. Now there's a copy under your account.</li>
+      <li>Clone <b>your</b> fork and open it (Factorial as the example):
+        <div class="cmdwrap"><pre class="cmd"><code>git clone https://github.com/YOUR-USERNAME/algo-factorial.git
+cd algo-factorial
+code .</code></pre><button type="button" class="copy">Copy</button></div>
+        VS Code may offer to <b>Reopen in Container</b>. You can skip it: plain <code>node</code> and <code>python3</code> are enough.</li>
+      <li>Read the <b>README</b> first. Write your plan as comments (pseudocode) before any code.</li>
+    </ol>
+
+    <h4>4 · Solve it, then run the spec</h4>
+    <ol class="steps">
+      <li>Write your code in the function that's already there. The spec file calls it and prints <code>true</code> / <code>True</code> for each check that passes:
+        <table>
+          <tr><th>Assignment</th><th>Your code</th><th>Check it with</th></tr>
+          <tr><td>Factorial (JS)</td><td><code>factorial.js</code></td><td><code>node factorialSpec.js</code></td></tr>
+          <tr><td>Roman Numerals (JS)</td><td><code>romanNumerals.js</code></td><td><code>node romanNumeralsSpec.js</code></td></tr>
+          <tr><td>99 Bottles (Python)</td><td><code>bottles.py</code></td><td><code>python3 bottles.py</code>, compare with the song in the README</td></tr>
+          <tr><td>Factorial (Python)</td><td><code>factorial.py</code></td><td><code>python3 factorial_spec.py</code></td></tr>
+          <tr><td>Fibonacci (Python)</td><td><code>fibonacci.py</code></td><td><code>python3 fibonacci_spec.py</code></td></tr>
+        </table></li>
+      <li><b>Done</b> = every line prints <code>true</code> / <code>True</code>.
+        <p class="fail"><b>If you see false:</b> make sure your function <b>returns</b> the answer (Lecture 2: printing is not returning). <code>None</code> / <code>undefined</code> = no <code>return</code>.</p></li>
+    </ol>
+
+    <h4>5 · Commit and push</h4>
+    <ol class="steps">
+      <li>From inside the assignment folder:
+        <div class="cmdwrap"><pre class="cmd"><code>git add -A
+git commit -m "Solve factorial"
+git push</code></pre><button type="button" class="copy">Copy</button></div>
+        <b>Or ask Claude</b> (in the assignment folder):
+        <div class="cmdwrap"><pre class="cmd" style="white-space:pre-wrap"><code>Run git status and show me the list of files. Then suggest a commit message for my solution and wait for my approval. After I approve, commit and push to my fork.</code></pre><button type="button" class="copy">Copy</button></div>
+        Claude asks before each git command. Read the file list before you say yes.
+        <p class="fail"><b>If this breaks:</b> "Permission denied" or 403 on push = you cloned the Code Platoon repo, not your fork. <code>git remote set-url origin https://github.com/YOUR-USERNAME/algo-factorial.git</code>, then push again.</p></li>
+      <li>Submit your fork links the way your instructor asks.</li>
+    </ol>
+  </section>
+
+  <ol class="kit">
+    <li><a href="https://github.com/kabeier/intro-js-py/blob/main/demo-kit/RUNBOOK.md" target="_blank" rel="noopener"><b>Runbook</b><span>Before class, per-slide Do/Say, the codepad keys, time checks.</span></a></li>
+    <li><a href="https://github.com/kabeier/intro-js-py/blob/main/demo-kit/prompts.md" target="_blank" rel="noopener"><b>Code and commands</b><span>Every file from both lectures with its output, plus the "Or ask Claude" prompt.</span></a></li>
+    <li><a href="https://github.com/kabeier/intro-js-py/tree/main/demo-kit" target="_blank" rel="noopener"><b>Finished lecture folders</b><span>fundamentals/ and functional/ exactly as they end up in class.</span></a></li>
+    <li><a href="https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/3-js-python/" target="_blank" rel="noopener"><b>The curriculum</b><span>JavaScript and Python overview, both lessons and the assignments page.</span></a></li>
+  </ol>
+
+  <h3>Diagrams</h3>
+  <div class="gallery" id="gallery"></div>
+
+  <footer>Want to edit a diagram? Download its .tldr file and drag it onto <a href="https://www.tldraw.com" target="_blank" rel="noopener">tldraw.com</a>. Earlier lectures: <a href="https://kabeier.github.io/intro-docker/" target="_blank" rel="noopener">Docker</a> · <a href="https://kabeier.github.io/SPAs-and-Claude/" target="_blank" rel="noopener">SPAs and Claude</a> · <a href="https://kabeier.github.io/Databases-and-Supabase/" target="_blank" rel="noopener">Databases and Supabase</a> · <a href="https://kabeier.github.io/Claude-and-full-stack-apps/" target="_blank" rel="noopener">Full-Stack Apps</a> · <a href="https://kabeier.github.io/Claude-and-auth/" target="_blank" rel="noopener">Authentication</a>.</footer>
+</main>
+<script>
+  document.querySelectorAll('.copy').forEach((b) => b.onclick = async () => {
+    await navigator.clipboard.writeText(b.previousElementSibling.innerText.trim()); b.textContent = 'Copied'; setTimeout(() => (b.textContent = 'Copy'), 1500)
+  })
+  const DIAGRAMS = [
+    ['JP1-01-runtimes', 'Your code needs a runtime'], ['JP1-02-labeled-box', 'A variable is a labeled box'],
+    ['JP1-03-index-vs-key', 'Positions vs names'], ['JP1-04-mutable', 'Mutable vs immutable'],
+    ['JP2-01-if-flow', 'if / else if / else'], ['JP2-02-function-machine', 'A function is a machine'],
+    ['JP2-03-new-or-changed', 'Constructive vs destructive'],
+  ]
+  document.getElementById('gallery').innerHTML = DIAGRAMS.map(([f, t]) => `
+    <figure><a href="diagrams/${f}.png" target="_blank" rel="noopener"><img src="diagrams/${f}.png" alt="${t}" loading="lazy"></a>
+    <figcaption>${t}<a href="diagrams/${f}.tldr" download>.tldr</a></figcaption></figure>`).join('')
+</script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 1 · JS & Python Fundamentals</title>
+<link rel="stylesheet" href="../shared/deck.css">
+<link rel="stylesheet" href="../shared/codepad.css">
+<style>
+  .twin { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .twin pre { font-size: 26px; }
+  .twin h3 { font-size: 26px; font-family: var(--mono); color: var(--blue); margin-bottom: 8px; }
+  .twin .py h3 { color: var(--green); }
+  .cmdbox pre { font-size: 23px; padding: 18px 24px; }
+  code.pk { background: #fff6c4; font-weight: 600; }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<!-- ============ OPEN (0–7) ============ -->
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Fundamentals · JavaScript and Python · Part 1 of 2</div>
+  <h1>Two languages, one way of thinking</h1>
+  <p class="sub">Variables and data types in JavaScript and Python, side by side. You type every line.</p>
+  <aside class="notes">
+    <p><b>Before class</b> (demo-kit/RUNBOOK.md): open this deck in <b>Chrome</b> with internet on (Python loads into the slides). Check <code>node --version</code> and <code>python3 --version</code> in your own terminal.</p>
+    <p>Press <b>T</b> to start the clock. Ask everyone to open <b>VS Code</b> and a <b>terminal</b>.</p>
+    <p><b>The code slides:</b> <b>N</b> types the next chunk for you, <b>R</b> runs both files. Click into the code to type yourself; <b>Esc</b> to leave. Presenter window (<b>P</b>) shows the next chunk before it's typed.</p>
+  </aside>
+</section>
+
+<section class="slide statement" data-seg="Open" data-at="1">
+  <h2>Same idea, two spellings</h2>
+  <div class="twin" style="margin-top:36px">
+    <div><h3>JavaScript</h3><pre>let userName = "Alex";
+console.log(userName);</pre></div>
+    <div class="py"><h3>Python</h3><pre>user_name = "Alex"
+print(user_name)</pre></div>
+  </div>
+  <p>Both print <b>Alex</b>. Learn the idea once, then learn two spellings.</p>
+  <aside class="notes">
+    <p>Ask chat: "Spot 3 differences." Expect: <code>let</code>, camelCase vs snake_case, the semicolon, <code>console.log</code> vs <code>print</code>.</p>
+    <p>"Engineers pick the language for the job. Today we learn the ideas both share."</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Open" data-at="3">
+  <h2>Why learn both?</h2>
+  <div class="cols">
+    <div class="card blue"><h3>JavaScript</h3>
+      <ul class="small">
+        <li><b>Runs in every browser:</b> clicks change the page</li>
+        <li>React, Vue, Angular build big UIs</li>
+        <li><b>Node.js</b> runs it on servers too</li>
+        <li>Hard parts: async, events, tools that change fast</li>
+      </ul></div>
+    <div class="card green"><h3>Python</h3>
+      <ul class="small">
+        <li><b>Reads like English:</b> logic over syntax</li>
+        <li>Data (pandas), AI (PyTorch), back ends (Django, Flask)</li>
+        <li>Fewer lines for the same idea</li>
+        <li>Hard parts: indentation rules, dynamic types, speed</li>
+      </ul></div>
+  </div>
+  <p class="bottomline">They often run in the same system: JS in the browser, Python behind it.</p>
+  <aside class="notes">
+    <ul>
+      <li>JS started in the mid-1990s to make pages interactive. Python started in the late 1980s / early 1990s with "readability first".</li>
+      <li>"The hard parts are normal. Learning to reason about them is part of the job."</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide diagram" data-seg="Open" data-at="5">
+  <img src="../diagrams/JP1-01-runtimes.png" alt="Your code needs a runtime to run it. example.js goes to Node.js (node example.js) which prints Hi in the terminal. example.py goes to the Python interpreter (python3 example.py) which prints Hi in the terminal. The browser also runs JavaScript. JavaScript is shaped by the browser and is event-driven; Python is shaped by clarity and usually runs top to bottom. No runtime means command not found; Docker can bring the runtime for you.">
+  <div class="src">diagrams/JP1-01-runtimes.tldr</div>
+  <aside class="notes">
+    <p>"Both are <b>interpreted</b>: the runtime reads your file and runs it line by line, at run time. That's why you can change a line and run again in a second."</p>
+    <ul>
+      <li><b>Common ground:</b> variables, conditions, loops, functions, data structures.</li>
+      <li><b>Difference:</b> JS is event-driven (waits for clicks); Python usually runs top to bottom.</li>
+    </ul>
+  </aside>
+</section>
+
+<!-- ============ SET UP (7–13) ============ -->
+<section class="slide" data-seg="Your terminal: set up" data-at="7">
+  <h2>Set up: one folder, two runtimes</h2>
+  <div class="cols cmdbox" style="gap:40px">
+    <div>
+      <p class="small" style="margin-bottom:10px"><b>1 · Make the folder, open it in VS Code</b></p>
+      <pre>mkdir fundamentals
+cd fundamentals
+code .</pre>
+      <p class="small muted" style="margin-top:12px"><code>code</code> not found? VS Code → File → Open Folder.</p>
+    </div>
+    <div>
+      <p class="small" style="margin-bottom:10px"><b>2 · Check both runtimes</b> (VS Code terminal: <b>Ctrl+`</b>)</p>
+      <pre>node --version
+python3 --version</pre>
+      <p class="small muted" style="margin-top:12px">Windows: <code>python --version</code>. Any v18+ and 3.10+ is fine.</p>
+    </div>
+  </div>
+  <p class="bottomline">Missing one? Docker runs it for you (Code Lab 1, "No Node or Python?").</p>
+  <aside class="notes">
+    <p><b>** YOUR TERMINAL, about 2 minutes. **</b> Do it live in your real terminal. Thumbs up in chat when both versions print.</p>
+    <ul>
+      <li>Mac: <code>code</code> missing → Command Palette → "Shell Command: Install 'code' command in PATH".</li>
+      <li>Missing runtime → don't install now. Code Lab 1 has the Docker one-liner (bind mount from the Docker lecture).</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide pad" data-seg="Code along: first run" data-at="9">
+  <h2>Your first two files <span class="say">create example.js and example.py, then run each</span></h2>
+  <div class="vscode" data-folder="fundamentals">
+<script type="text/plain" data-file="example.js" data-step>console.log("Hello from JavaScript");</script>
+<script type="text/plain" data-file="example.py" data-step>print("Hello from Python")</script>
+<script type="text/plain" data-file="example.js" data-expect>Hello from JavaScript</script>
+<script type="text/plain" data-file="example.py" data-expect>Hello from Python</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 2 minutes. **</b> Students: new file <code>example.js</code>, then <code>example.py</code> (Explorer → New File).</p>
+    <ul>
+      <li><b>N</b> types the JS line, <b>N</b> the Python line, <b>R</b> runs both.</li>
+      <li>Point at the terminal: "<code>node example.js</code> and <code>python3 example.py</code>. Type those in your own terminal."</li>
+      <li><code>console.log()</code> logs to the console where the code runs. <code>print()</code> prints to the terminal.</li>
+    </ul>
+    <p><b>Watch for:</b> "No such file": they're not in the <code>fundamentals</code> folder (<code>cd fundamentals</code>), or the file wasn't saved (<b>Ctrl+S</b>).</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Docker set up" data-at="11">
+  <h2>The same files, in Docker</h2>
+  <div class="cols" style="gap:40px">
+    <div><p class="small" style="margin-bottom:8px"><b>Dockerfile.node</b></p>
+      <pre style="font-size:22px">FROM node:18-alpine
+WORKDIR /app
+COPY example.js .
+CMD ["node", "example.js"]</pre></div>
+    <div><p class="small" style="margin-bottom:8px"><b>Dockerfile.python</b></p>
+      <pre style="font-size:22px">FROM python:3.11-slim
+WORKDIR /app
+COPY example.py .
+CMD ["python3", "example.py"]</pre></div>
+  </div>
+  <pre style="font-size:20px; margin-top:22px; padding:16px 24px">docker build -t hello-js -f Dockerfile.node .     &amp;&amp;  docker run --rm hello-js
+docker build -t hello-py -f Dockerfile.python .   &amp;&amp;  docker run --rm hello-py</pre>
+  <p class="bottomline">Switch languages by switching the base image.</p>
+  <aside class="notes">
+    <p><b>** YOUR DEMO, about 2 minutes. ** Students watch</b>; it's in Code Lab 1 for later.</p>
+    <ul>
+      <li>The two Dockerfiles are the curriculum's, word for word. Two in one folder need two names, so <code>-f</code> picks the file.</li>
+      <li>Prints <code>Hello from JavaScript</code> / <code>Hello from Python</code>.</li>
+      <li>"Docker lets us write down exactly which runtime the code needs. Same as last lecture."</li>
+    </ul>
+    <p><b>Pre-pull at home:</b> <code>node:18-alpine</code> and <code>python:3.11-slim</code> (RUNBOOK).</p>
+  </aside>
+</section>
+
+<!-- ============ VARIABLES + PRIMITIVES (13–22) ============ -->
+<section class="slide diagram" data-seg="Variables" data-at="13">
+  <img src="../diagrams/JP1-02-labeled-box.png" alt="A variable is a labeled box. The label is the name and the box holds one value. In JavaScript: let userName = &quot;Alex&quot;, a box labeled userName holding &quot;Alex&quot;. In Python, with no keyword: user_name = &quot;Alex&quot;. Naming: camelCase for JS variables, snake_case for Python variables, PascalCase for classes, UPPER_CASE for constants. Good labels say what is inside: userName, not x.">
+  <div class="src">diagrams/JP1-02-labeled-box.tldr</div>
+  <aside class="notes">
+    <p>"A variable is a box with a label. We always put something in the box."</p>
+    <ul>
+      <li>JS needs a keyword: <b>use <code>let</code></b> for now. <code>const</code> and <code>var</code> come later.</li>
+      <li>Python has no keyword: the <code>=</code> is the assignment.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide pad" data-seg="Code along: variables" data-at="14">
+  <h2>Variables and naming <span class="say">variables.js · variables.py</span></h2>
+  <div class="vscode" data-folder="fundamentals">
+<script type="text/plain" data-file="variables.js" data-step>let userName = "Alex";
+console.log(userName);</script>
+<script type="text/plain" data-file="variables.py" data-step>user_name = "Alex"
+print(user_name)</script>
+<script type="text/plain" data-file="variables.js" data-step>// change what's in the box (no let the second time)
+userName = "Sam";
+console.log(userName);</script>
+<script type="text/plain" data-file="variables.py" data-step># change what's in the box
+user_name = "Sam"
+print(user_name)</script>
+<script type="text/plain" data-file="variables.js" data-step>// camelCase for variables, UPPER_CASE for constants
+let favoriteColor = "blue";
+let MAX_USERS = 30;
+console.log(favoriteColor, MAX_USERS);</script>
+<script type="text/plain" data-file="variables.py" data-step># snake_case for variables, UPPER_CASE for constants
+favorite_color = "blue"
+MAX_USERS = 30
+print(favorite_color, MAX_USERS)</script>
+<script type="text/plain" data-file="variables.js" data-expect>Alex
+Sam
+blue 30</script>
+<script type="text/plain" data-file="variables.py" data-expect>Alex
+Sam
+blue 30</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Students: new files <code>variables.js</code> and <code>variables.py</code>.</p>
+    <ul>
+      <li>Steps 1–2: run (<b>R</b>) after the first pair so they see it work early.</li>
+      <li>Steps 3–4: "Same label, new contents. JS doesn't say <code>let</code> again."</li>
+      <li>Steps 5–6: naming conventions. Commas in <code>console.log</code> / <code>print</code> print with a space between.</li>
+    </ul>
+    <p><b>Break it (optional):</b> add <code>let userName = "Jo";</code> again in JS → <code>SyntaxError: Identifier 'userName' has already been declared</code>.</p>
+  </aside>
+</section>
+
+<section class="slide pad" data-seg="Code along: primitives" data-at="18">
+  <h2>Primitive types: one value each <span class="say">primitives.js · primitives.py</span></h2>
+  <div class="vscode" data-folder="fundamentals">
+<script type="text/plain" data-file="primitives.js" data-step>let message = "Hello, world!";
+console.log(message);
+let count = 10;
+console.log(count);</script>
+<script type="text/plain" data-file="primitives.py" data-step>message = "Hello, world!"
+print(message)
+count = 10
+print(count)</script>
+<script type="text/plain" data-file="primitives.js" data-step>let isActive = true;
+console.log(isActive);
+let data = null;
+console.log(data);</script>
+<script type="text/plain" data-file="primitives.py" data-step>is_active = True
+print(is_active)
+data = None
+print(data)</script>
+<script type="text/plain" data-file="primitives.js" data-step>let price = 9.99;
+console.log(typeof price, typeof count);
+let value;
+console.log(value);</script>
+<script type="text/plain" data-file="primitives.py" data-step>price = 9.99
+print(type(price), type(count))</script>
+<script type="text/plain" data-file="primitives.js" data-expect>Hello, world!
+10
+true
+null
+number number
+undefined</script>
+<script type="text/plain" data-file="primitives.py" data-expect>Hello, world!
+10
+True
+None
+<class 'float'> <class 'int'></script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>primitives.js</code> and <code>primitives.py</code>.</p>
+    <ul>
+      <li><b>Strings</b> use quotes. We use <b>double quotes</b>, so an apostrophe (<code>"it's"</code>) never breaks it.</li>
+      <li><b>Booleans:</b> <code>true</code> in JS, <code>True</code> in Python. The capital letter is the difference.</li>
+      <li><b>Nothing on purpose:</b> <code>null</code> / <code>None</code>.</li>
+      <li><b>Step 5–6:</b> <code>typeof</code> / <code>type()</code> show the type. JS calls 9.99 and 10 both <code>number</code>; Python splits <code>float</code> and <code>int</code>.</li>
+      <li><code>let value;</code> with nothing in it prints <code>undefined</code>: JS only.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Primitives" data-at="21">
+  <h2>Primitive types side by side</h2>
+  <table class="dbt">
+    <tr><th></th><th>JavaScript</th><th>Python</th></tr>
+    <tr><td><b>text</b></td><td>"Hello" · string</td><td>"Hello" · str</td></tr>
+    <tr><td><b>whole number</b></td><td>10 · number</td><td>10 · int</td></tr>
+    <tr><td><b>decimal</b></td><td>9.99 · <i>still</i> number</td><td class="pk">9.99 · float (its own type)</td></tr>
+    <tr><td><b>true / false</b></td><td class="pk">true / false</td><td class="pk">True / False</td></tr>
+    <tr><td><b>empty on purpose</b></td><td>null</td><td>None</td></tr>
+    <tr><td><b>declared, never set</b></td><td class="pk">undefined (JS only)</td><td>(no such thing)</td></tr>
+  </table>
+  <p class="bottomline">Primitive = one single value. The building blocks of everything else.</p>
+  <aside class="notes">
+    <p>Quick read-through: the yellow cells are where people trip. <code>True</code> in JS gives <code>ReferenceError: True is not defined</code>.</p>
+  </aside>
+</section>
+
+<!-- ============ ACTIVITY (22–28) ============ -->
+<section class="slide activity" data-seg="Activity: JS, Python, or both?" data-at="22">
+  <h2>Activity: JS, Python, or both?</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>A line of code appears</li>
+    <li>In chat on "go": <b>JS</b>, <b>PYTHON</b> or <b>BOTH</b></li>
+    <li>"Both" means it runs in both languages without an error</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: activity-js-or-python/</p>
+  <aside class="notes">
+    <p>About 30 seconds a card; the first 6 are the core set. Space reveals.</p>
+    <p>Answers are also in your Notes (teacher guide). Every answer was run in Node and Python.</p>
+  </aside>
+</section>
+
+<!-- ============ COLLECTIONS (28–34) ============ -->
+<section class="slide diagram" data-seg="Complex types" data-at="28">
+  <img src="../diagrams/JP1-03-index-vs-key.png" alt="Lists use positions; objects and dicts use names. The colors array or list holds red, green and blue at positions 0, 1 and 2; colors[1] gives green in both JS and Python. The user object or dict has key name with value Alex and key age with value 30. JS reads it with user.name or user[&quot;name&quot;]; Python with user.get(&quot;name&quot;) or user[&quot;name&quot;]. Position matters: use a list. Looking things up by name: use an object or dict.">
+  <div class="src">diagrams/JP1-03-index-vs-key.tldr</div>
+  <aside class="notes">
+    <p>"Complex types hold <b>many</b> values."</p>
+    <ul>
+      <li>List / array: in order, <b>counted from 0</b>. Reading one slot by its index is instant.</li>
+      <li>Object / dict: key → value. You reach a value only through its key.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide pad" data-seg="Code along: collections" data-at="29">
+  <h2>Lists, objects and dicts <span class="say">collections.js · collections.py</span></h2>
+  <div class="vscode" data-folder="fundamentals">
+<script type="text/plain" data-file="collections.js" data-step>// idxs         0       1       2
+let colors = ["red", "green", "blue"];
+console.log(colors);
+console.log(colors[1]);</script>
+<script type="text/plain" data-file="collections.py" data-step># idxs      0       1        2
+colors = ["red", "green", "blue"]
+print(colors)
+print(colors[1])</script>
+<script type="text/plain" data-file="collections.js" data-step>let user = { name: "Alex", age: 30 };
+console.log(user);
+console.log(user.name);</script>
+<script type="text/plain" data-file="collections.py" data-step>user = {"name": "Alex", "age": 30}
+print(user)
+print(user.get("name"))</script>
+<script type="text/plain" data-file="collections.js" data-step>// bracket notation: add, then remove
+user["city"] = "Chicago";
+delete user.age;
+console.log(user);</script>
+<script type="text/plain" data-file="collections.py" data-step># bracket notation: add, then remove
+user["city"] = "Chicago"
+del user["age"]
+print(user)</script>
+<script type="text/plain" data-file="collections.js" data-expect>[ 'red', 'green', 'blue' ]
+green
+{ name: 'Alex', age: 30 }
+Alex
+{ name: 'Alex', city: 'Chicago' }</script>
+<script type="text/plain" data-file="collections.py" data-expect>['red', 'green', 'blue']
+green
+{'name': 'Alex', 'age': 30}
+Alex
+{'name': 'Alex', 'city': 'Chicago'}</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>collections.js</code> and <code>collections.py</code>.</p>
+    <ul>
+      <li>Lists hold any mix of types. Node prints strings in single quotes: that's just how it displays them.</li>
+      <li><b>Dot</b> notation is JS-only (<code>user.name</code>). Python uses <code>user.get("name")</code> or <code>user["name"]</code>.</li>
+      <li><b>Bracket</b> notation works in both: add with <code>user["city"] = …</code>; remove with <code>delete</code> (JS) / <code>del</code> (Python).</li>
+    </ul>
+    <p><b>If asked:</b> <code>user.get("phone")</code> → <code>None</code>; <code>user["phone"]</code> → <code>KeyError</code>. JS <code>user.phone</code> → <code>undefined</code>.</p>
+  </aside>
+</section>
+
+<!-- ============ MUTABLE (34–40) ============ -->
+<section class="slide pad" data-seg="Code along: mutable" data-at="34">
+  <h2>Can it change? <span class="say">mutable.js · mutable.py</span></h2>
+  <div class="vscode" data-folder="fundamentals">
+<script type="text/plain" data-file="mutable.js" data-step>// a list is mutable: it changes in place
+let colors = ["red", "green"];
+colors.push("blue");
+console.log(colors);</script>
+<script type="text/plain" data-file="mutable.py" data-step># a list is mutable: it changes in place
+colors = ["red", "green"]
+colors.append("blue")
+print(colors)</script>
+<script type="text/plain" data-file="mutable.js" data-step>// a string is immutable: you get a NEW string
+let name = "alex";
+let loud = name.toUpperCase();
+console.log(name, loud);</script>
+<script type="text/plain" data-file="mutable.py" data-step># a string is immutable: you get a NEW string
+name = "alex"
+loud = name.upper()
+print(name, loud)</script>
+<script type="text/plain" data-file="mutable.js" data-step>// the bug: two labels, one list
+let copy = colors;
+copy.push("pink");
+console.log(colors);</script>
+<script type="text/plain" data-file="mutable.py" data-step># the bug: two labels, one list
+copy = colors
+copy.append("pink")
+print(colors)</script>
+<script type="text/plain" data-file="mutable.js" data-expect>[ 'red', 'green', 'blue' ]
+alex ALEX
+[ 'red', 'green', 'blue', 'pink' ]</script>
+<script type="text/plain" data-file="mutable.py" data-expect>['red', 'green', 'blue']
+alex ALEX
+['red', 'green', 'blue', 'pink']</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Students: <code>mutable.js</code> and <code>mutable.py</code>.</p>
+    <ul>
+      <li>Before step 5, ask chat: <b>"What will colors print?"</b> Most say 3 colors. It's 4.</li>
+      <li>"<code>=</code> doesn't copy a list. It sticks a second label on the same box." Next slide shows it.</li>
+    </ul>
+    <p><b>If asked how to copy:</b> JS <code>[...colors]</code>, Python <code>colors.copy()</code>.</p>
+  </aside>
+</section>
+
+<section class="slide diagram" data-seg="Mutable vs immutable" data-at="37">
+  <img src="../diagrams/JP1-04-mutable.png" alt="Mutable changes in place; immutable makes a new value. Mutable, like a mutant such as Wolverine: lists or arrays, dicts or objects, and sets. colors.push(&quot;blue&quot;) in JS or colors.append(&quot;blue&quot;) in Python changes the same list. Immutable: strings, numbers, booleans. name.toUpperCase() or name.upper() returns a new string and name is unchanged. The bug it causes: two labels, colors and copy, point at one list, so copy.push(&quot;pink&quot;) gives colors pink too. = does not copy a list; it sticks a second label on the same box.">
+  <div class="src">diagrams/JP1-04-mutable.tldr</div>
+  <aside class="notes">
+    <p>"<b>Mutable</b> is like a mutant, like Wolverine: it can change. <b>Immutable</b> never changes; you get a new one."</p>
+    <ul>
+      <li>Mutable: lists / arrays, dicts / objects, sets.</li>
+      <li>Immutable: strings, numbers, booleans.</li>
+      <li>Why care: shared state. One part of a program changes a list another part is still using.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="39">
+  <h2>Homework, Part I</h2>
+  <ol style="list-style:none;padding-left:0" class="small">
+    <li><b>Priority 1, Code Lab 1:</b> every file from today in your <code>fundamentals</code> folder, running in <b>your</b> terminal, output matching</li>
+    <li><b>Priority 2, FreeCodeCamp:</b> 50 steps of your current certification</li>
+  </ol>
+  <div class="card green" style="margin-top:28px">
+    <h3>Come to Lecture 2 ready</h3>
+    <p class="small"><code>node example.js</code> and <code>python3 example.py</code> must work. Lecture 2 is decisions, loops and functions, all code along.</p>
+  </div>
+  <aside class="notes">
+    <p>Full steps are on the class site (Homework Part I). The five algorithm assignments come after Lecture 2: they need loops and functions.</p>
+  </aside>
+</section>
+
+</div>
+<script src="../shared/deck.js"></script>
+<script src="../shared/codepad.js"></script>
+</body>
+</html>

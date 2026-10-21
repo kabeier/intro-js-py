@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lecture 2 · Functional Programming</title>
+<link rel="stylesheet" href="../shared/deck.css">
+<link rel="stylesheet" href="../shared/codepad.css">
+<style>
+  .gym { font-size: 30px; }
+  .gym li { margin-bottom: 10px; }
+</style>
+</head>
+<body data-minutes="40">
+<div class="stage">
+
+<!-- ============ OPEN (0–3) ============ -->
+<section class="slide title" data-seg="Open" data-at="0">
+  <div class="kicker">Fundamentals · JavaScript and Python · Part 2 of 2</div>
+  <h1>Decisions, loops and functions</h1>
+  <p class="sub">How a program reacts to data, repeats work, and wraps logic up to reuse. Same two languages, same code along.</p>
+  <aside class="notes">
+    <p><b>Before class:</b> this deck open in <b>Chrome</b>, internet on. Your terminal: <code>node --version</code>, <code>python3 --version</code>.</p>
+    <p>Press <b>T</b>. Students open VS Code; new folder <code>functional</code> (<code>mkdir functional</code>, <code>cd functional</code>, <code>code .</code>).</p>
+    <p><b>Code slides:</b> <b>N</b> types the next chunk, <b>R</b> runs both files, <b>Esc</b> leaves the editor if you clicked into it.</p>
+  </aside>
+</section>
+
+<section class="slide statement" data-seg="Open" data-at="1">
+  <h2>You already think in if / else</h2>
+  <ul class="gym" style="margin-top:30px">
+    <li><b>If</b> the leg extension machine is open → quads</li>
+    <li><b>Else if</b> the leg curl machine is open → hamstrings</li>
+    <li><b>Else</b> → squats (there's always a squat rack open)</li>
+  </ul>
+  <p>Today: comparisons → decisions → loops → functions → filter, sort and map.</p>
+  <aside class="notes">
+    <p>The curriculum's gym example. "You make this decision without thinking. Today you write it down for a computer."</p>
+    <p>"The goal isn't memorizing syntax. It's knowing <b>when and why</b> to use each one."</p>
+  </aside>
+</section>
+
+<!-- ============ COMPARE + CONDITIONALS (3–13) ============ -->
+<section class="slide pad" data-seg="Code along: compare" data-at="3">
+  <h2>Comparisons give true or false <span class="say">compare.js · compare.py</span></h2>
+  <div class="vscode" data-folder="functional">
+<script type="text/plain" data-file="compare.js" data-step>let age = 18;
+console.log(age >= 18);
+console.log(age < 18);
+console.log(age === 18, age !== 21);</script>
+<script type="text/plain" data-file="compare.py" data-step>age = 18
+print(age >= 18)
+print(age < 18)
+print(age == 18, age != 21)</script>
+<script type="text/plain" data-file="compare.js" data-step>// === also checks the type. Use it.
+console.log(5 == "5");
+console.log(5 === "5");</script>
+<script type="text/plain" data-file="compare.py" data-step># Python's == never mixes types
+print(5 == "5")</script>
+<script type="text/plain" data-file="compare.js" data-expect>true
+false
+true true
+true
+false</script>
+<script type="text/plain" data-file="compare.py" data-expect>True
+False
+True True
+False</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Students: <code>compare.js</code>, <code>compare.py</code>.</p>
+    <ul>
+      <li>Operators: <code>==</code> / <code>===</code>, <code>!=</code> / <code>!==</code>, <code>&gt; &lt; &gt;= &lt;=</code>. Every one gives a boolean.</li>
+      <li>Step 3: <code>5 == "5"</code> is <b>true</b> in JS (it converts the type first). <code>===</code> is <b>false</b>. "In JS, always use <b>===</b>."</li>
+      <li>"Any time you think <i>if this data…</i>, you need one of these."</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide pad" data-seg="Code along: conditionals" data-at="6">
+  <h2>if / else if / else <span class="say">conditionals.js · conditionals.py</span></h2>
+  <div class="vscode" data-folder="functional" data-term-lines="4">
+<script type="text/plain" data-file="conditionals.js" data-step>let score = 85;
+
+if (score >= 90) {
+  console.log("Pass with Honors");
+} else if (score >= 70) {
+  console.log("Pass");
+} else {
+  console.log("Fail");
+}</script>
+<script type="text/plain" data-file="conditionals.py" data-step>score = 85
+
+if score >= 90:
+    print("Pass with Honors")
+elif score >= 70:
+    print("Pass")
+else:
+    print("Fail")</script>
+<script type="text/plain" data-file="conditionals.js" data-step>// AND: both must be true
+let age = 21;
+let hasId = true;
+
+if (age >= 21 && hasId) {
+  console.log("This adult can drink");
+} else if (age >= 18) {
+  console.log("This is an adult but can't drink");
+} else {
+  console.log("This person is a minor");
+}</script>
+<script type="text/plain" data-file="conditionals.py" data-step># OR: one of the two is enough
+hungry = False
+bored = True
+
+if hungry or bored:
+    print("cook a meal")
+else:
+    print("You don't need to eat")</script>
+<script type="text/plain" data-file="conditionals.js" data-expect>Pass
+This adult can drink</script>
+<script type="text/plain" data-file="conditionals.py" data-expect>Pass
+cook a meal</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>conditionals.js</code>, <code>conditionals.py</code>.</p>
+    <ul>
+      <li>JS: condition in <b>( )</b>, block in <b>{ }</b>. Python: a <b>colon</b> and <b>4-space indent</b>. <code>elif</code> = else if.</li>
+      <li>Step 3 is the curriculum's AND example (JS); step 4 its OR example (Python). <code>&amp;&amp;</code> / <code>and</code>, <code>||</code> / <code>or</code>.</li>
+      <li>Ask: "Change <code>score</code> to 95, then 50. What prints?" Edit it live and press Run.</li>
+    </ul>
+    <p><b>Watch for:</b> <code>True</code> typed in JS → <code>ReferenceError: True is not defined</code>. Python without the colon → <code>SyntaxError: expected ':'</code>. Missing indent → <code>IndentationError</code>.</p>
+  </aside>
+</section>
+
+<section class="slide diagram" data-seg="Conditionals" data-at="11">
+  <img src="../diagrams/JP2-01-if-flow.png" alt="if, else if, else: the first true branch wins. score = 85. Is score at least 90? No. Is score at least 70? Yes, so it prints Pass. Otherwise it would print Fail. Spelling: JS uses if (…) { }, else if (…) { }, else { }; Python uses if …:, elif …:, else:. AND is &amp;&amp; or and; OR is || or or. Put the strictest check first: 85 would also pass at least 70.">
+  <div class="src">diagrams/JP2-01-if-flow.tldr</div>
+  <aside class="notes">
+    <p>"Top to bottom; the first true one wins, the rest are skipped. That's why the 90 check goes first."</p>
+    <p>Conditionals are everywhere: login checks, feature flags, error handling, game logic, API responses.</p>
+  </aside>
+</section>
+
+<!-- ============ LOOPS (13–23) ============ -->
+<section class="slide pad" data-seg="Code along: loops" data-at="13">
+  <h2>Loop a list: by value, by index, or both <span class="say">loops.js · loops.py</span></h2>
+  <div class="vscode" data-folder="functional">
+<script type="text/plain" data-file="loops.js" data-step>let colors = ["red", "green", "blue"];
+
+// by value: for...of
+for (let color of colors) {
+  console.log(color);
+}</script>
+<script type="text/plain" data-file="loops.py" data-step>colors = ["red", "green", "blue"]
+
+# by value: for...in
+for color in colors:
+    print(color)</script>
+<script type="text/plain" data-file="loops.js" data-step>// by index
+for (let i = 0; i < colors.length; i++) {
+  console.log(i, colors[i]);
+}</script>
+<script type="text/plain" data-file="loops.py" data-step># by index
+for idx in range(len(colors)):
+    print(idx, colors[idx])</script>
+<script type="text/plain" data-file="loops.js" data-step>// both
+for (const [idx, color] of colors.entries()) {
+  console.log(idx, color);
+}</script>
+<script type="text/plain" data-file="loops.py" data-step># both
+for idx, color in enumerate(colors):
+    print(idx, color)</script>
+<script type="text/plain" data-file="loops.js" data-expect>red
+green
+blue
+0 red
+1 green
+2 blue
+0 red
+1 green
+2 blue</script>
+<script type="text/plain" data-file="loops.py" data-expect>red
+green
+blue
+0 red
+1 green
+2 blue
+0 red
+1 green
+2 blue</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>loops.js</code>, <code>loops.py</code>. Run after each pair.</p>
+    <ul>
+      <li><b>By value</b> is the most common. JS is for <b>of</b>; Python is for <b>in</b>.</li>
+      <li><b>By index</b>, JS: <code>let i = 0</code> start · <code>i &lt; colors.length</code> keep going while true · <code>i++</code> add 1 after each pass.</li>
+      <li>Python: <code>range(3)</code> gives 0, 1, 2 (up to, <b>not including</b>, 3).</li>
+      <li><b>Both</b>: <code>entries()</code> / <code>enumerate()</code> hand back [index, value] pairs; we unpack each pair into two variables.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide pad" data-seg="Code along: more loops" data-at="18">
+  <h2>Loop an object or dict, then while <span class="say">more-loops.js · more-loops.py</span></h2>
+  <div class="vscode" data-folder="functional">
+<script type="text/plain" data-file="more-loops.js" data-step>let user = { name: "Alex", age: 30 };
+
+for (let key in user) {
+  console.log(key);
+}
+for (let [key, value] of Object.entries(user)) {
+  console.log(key, value);
+}</script>
+<script type="text/plain" data-file="more-loops.py" data-step>user = {"name": "Alex", "age": 30}
+
+for key in user:
+    print(key)
+for key, value in user.items():
+    print(key, value)</script>
+<script type="text/plain" data-file="more-loops.js" data-step>let count = 0;
+while (count < 3) {
+  console.log(count);
+  count++;
+}</script>
+<script type="text/plain" data-file="more-loops.py" data-step>count = 0
+while count < 3:
+    print(count)
+    count += 1</script>
+<script type="text/plain" data-file="more-loops.js" data-expect>name
+age
+name Alex
+age 30
+0
+1
+2</script>
+<script type="text/plain" data-file="more-loops.py" data-expect>name
+age
+name Alex
+age 30
+0
+1
+2</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>more-loops.js</code>, <code>more-loops.py</code>.</p>
+    <ul>
+      <li>Objects: JS <code>for…in</code> gives <b>keys</b>; <code>Object.entries</code> gives pairs. Python: <code>.items()</code>. Used all the time for API responses.</li>
+      <li><b>while</b>: for when you don't know how many times ahead.</li>
+    </ul>
+    <p><b>Break it on purpose (1 min):</b> click into the JS, delete <code>count++;</code>, Run. The slides stop it after 300 lines: "an infinite loop". In a real terminal: <b>Ctrl+C</b>. Then <b>Reset</b>.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Loops" data-at="22">
+  <h2>Which loop?</h2>
+  <table class="dbt small">
+    <tr><th>You want…</th><th>JavaScript</th><th>Python</th></tr>
+    <tr><td>each <b>value</b></td><td class="pk">for (let c of colors)</td><td class="pk">for c in colors:</td></tr>
+    <tr><td>each <b>index</b></td><td>for (let i = 0; i &lt; colors.length; i++)</td><td>for i in range(len(colors)):</td></tr>
+    <tr><td>index <b>and</b> value</td><td>for (const [i, c] of colors.entries())</td><td>for i, c in enumerate(colors):</td></tr>
+    <tr><td>object / dict <b>keys</b></td><td>for (let k in user)</td><td>for k in user:</td></tr>
+    <tr><td>keys <b>and</b> values</td><td>for (let [k, v] of Object.entries(user))</td><td>for k, v in user.items():</td></tr>
+    <tr><td>until something changes</td><td>while (count &lt; 3)</td><td>while count &lt; 3:</td></tr>
+  </table>
+  <p class="bottomline">The trap: JS <code>for…in</code> on a list gives indexes, not values.</p>
+  <aside class="notes">
+    <p>The yellow row is the one to remember. JS <code>of</code> = values, Python <code>in</code> = values.</p>
+    <p>The activity's card 5 is exactly this trap.</p>
+  </aside>
+</section>
+
+<!-- ============ ACTIVITY (23–29) ============ -->
+<section class="slide activity" data-seg="Activity: What prints?" data-at="23">
+  <h2>Activity: What prints?</h2>
+  <div class="countdown" data-sec="360"></div>
+  <ol class="steps">
+    <li>A few lines of code appear</li>
+    <li>In chat on "go": the letter of what prints, <b>A</b>, <b>B</b> or <b>C</b></li>
+    <li>Then we run it in the codepad to check</li>
+  </ol>
+  <p class="muted small" style="margin-top:24px">Page: activity-what-prints/</p>
+  <aside class="notes">
+    <p>About 30 seconds a card; the first 6 are the core set. Space reveals.</p>
+    <p>Every answer was run in Node and Python. Answers are also in your Notes (teacher guide).</p>
+    <p>Optional: if a card sparks debate, open the <b>Playground</b> page and run it.</p>
+  </aside>
+</section>
+
+<!-- ============ FUNCTIONS (29–35) ============ -->
+<section class="slide pad" data-seg="Code along: functions" data-at="29">
+  <h2>Write it once, call it often <span class="say">functions.js · functions.py</span></h2>
+  <div class="vscode" data-folder="functional">
+<script type="text/plain" data-file="functions.js" data-step>function sayHi() {
+  console.log("Good Afternoon");
+}
+
+sayHi();
+sayHi();</script>
+<script type="text/plain" data-file="functions.py" data-step>def say_hi():
+    print("Good Afternoon")
+
+say_hi()
+say_hi()</script>
+<script type="text/plain" data-file="functions.js" data-step>// name is a parameter; "Alice" is the argument
+function greet(name) {
+  console.log("Good Afternoon " + name);
+}
+
+greet("Alice");
+let result = greet("Sam");
+console.log(result);</script>
+<script type="text/plain" data-file="functions.py" data-step># name is a parameter; "Alice" is the argument
+def greet(name):
+    print("Good Afternoon " + name)
+
+greet("Alice")
+result = greet("Sam")
+print(result)</script>
+<script type="text/plain" data-file="functions.js" data-step data-mode="set">function sayHi() {
+  console.log("Good Afternoon");
+}
+
+sayHi();
+sayHi();
+
+// name is a parameter; "Alice" is the argument
+function greet(name) {
+  return "Good Afternoon " + name;
+}
+
+greet("Alice");
+let result = greet("Sam");
+console.log(result);</script>
+<script type="text/plain" data-file="functions.py" data-step data-mode="set">def say_hi():
+    print("Good Afternoon")
+
+say_hi()
+say_hi()
+
+# name is a parameter; "Alice" is the argument
+def greet(name):
+    return "Good Afternoon " + name
+
+greet("Alice")
+result = greet("Sam")
+print(result)</script>
+<script type="text/plain" data-file="functions.js" data-expect>Good Afternoon
+Good Afternoon
+Good Afternoon Sam</script>
+<script type="text/plain" data-file="functions.py" data-expect>Good Afternoon
+Good Afternoon
+Good Afternoon Sam</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>functions.js</code>, <code>functions.py</code>.</p>
+    <ul>
+      <li><b>Declare</b> (JS <code>function</code>) / <b>define</b> (Python <code>def</code>). Nothing happens until you <b>call</b> it.</li>
+      <li>DRY: Don't Repeat Yourself. Two calls, two prints, one definition.</li>
+      <li>Steps 3–4, then <b>R</b>: before running, ask "what is <code>result</code>?" The greeting prints, but <code>result</code> is <b>undefined</b> / <b>None</b>. Text in the terminal ≠ a returned value.</li>
+      <li>Steps 5–6 change one line (it lights up yellow): <code>console.log</code> → <code>return</code>. <b>R</b> again: now <code>result</code> holds the greeting, and <code>greet("Alice")</code> prints <b>nothing</b>. Returning doesn't print.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide diagram" data-seg="Functions" data-at="33">
+  <img src="../diagrams/JP2-02-function-machine.png" alt="A function is a machine: arguments in, a return value out. The argument &quot;Sam&quot; is passed in a call to greet(name), where name is the parameter (the placeholder), and return &quot;Good Afternoon &quot; + name sends back the return value &quot;Good Afternoon Sam&quot;. print or console.log only shows text in the terminal; the caller gets nothing back: undefined in JS, None in Python. return hands the value back to the caller: let message = greet(&quot;Sam&quot;) and now message holds it. JS: function greet(name) { … }. Python: def greet(name): …">
+  <div class="src">diagrams/JP2-02-function-machine.tldr</div>
+  <aside class="notes">
+    <p>"<b>Parameters</b> are placeholders. <b>Arguments</b> are the real values you pass in."</p>
+    <p>"Printing is not returning." That one line saves hours on the homework: the spec files check what you <b>return</b>.</p>
+  </aside>
+</section>
+
+<!-- ============ FUNCTIONAL TOOLS (34–40) ============ -->
+<section class="slide pad" data-seg="Code along: functional tools" data-at="34">
+  <h2>Arrow, lambda, filter, sort, map <span class="say">functional.js · functional.py</span></h2>
+  <div class="vscode" data-folder="functional">
+<script type="text/plain" data-file="functional.js" data-step>const multiply = (a, b) => a * b;
+console.log(multiply(3, 4));</script>
+<script type="text/plain" data-file="functional.py" data-step>multiply = lambda a, b: a * b
+print(multiply(3, 4))</script>
+<script type="text/plain" data-file="functional.js" data-step>let nums = [3, 1, 4, 2];
+let evens = nums.filter(n => n % 2 === 0);
+let doubled = nums.map(n => n * 2);
+console.log(evens, doubled, nums);</script>
+<script type="text/plain" data-file="functional.py" data-step>nums = [3, 1, 4, 2]
+evens = list(filter(lambda n: n % 2 == 0, nums))
+doubled = [n * 2 for n in nums]
+print(evens, doubled, nums)</script>
+<script type="text/plain" data-file="functional.js" data-step>nums.sort((a, b) => a - b);
+console.log(nums);</script>
+<script type="text/plain" data-file="functional.py" data-step>sorted_nums = sorted(nums)
+print(sorted_nums, nums)</script>
+<script type="text/plain" data-file="functional.js" data-expect>12
+[ 4, 2 ] [ 6, 2, 8, 4 ] [ 3, 1, 4, 2 ]
+[ 1, 2, 3, 4 ]</script>
+<script type="text/plain" data-file="functional.py" data-expect>12
+[4, 2] [6, 2, 8, 4] [3, 1, 4, 2]
+[1, 2, 3, 4] [3, 1, 4, 2]</script>
+  </div>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>functional.js</code>, <code>functional.py</code>.</p>
+    <ul>
+      <li><b>Arrow</b> (JS) / <b>lambda</b> (Python): a one-line function. Used inside filter, map and sort.</li>
+      <li><code>n % 2 === 0</code>: remainder 0 means even.</li>
+      <li>filter and map / list comprehension: <b>new</b> lists. <code>nums</code> is untouched.</li>
+      <li>Step 5: JS <code>.sort()</code> <b>changes nums itself</b>. Python <code>sorted()</code> makes a new list; <code>nums</code> stays <code>[3, 1, 4, 2]</code>.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide diagram" data-seg="Constructive vs destructive" data-at="38">
+  <img src="../diagrams/JP2-03-new-or-changed.png" alt="Constructive makes a new list; destructive changes yours. From nums [3, 1, 4, 2]: filter gives a new evens [4, 2]; map or a list comprehension gives a new doubled [6, 2, 8, 4]; Python sorted(nums) gives a new [1, 2, 3, 4]. These are constructive and nums is untouched. JS nums.sort(…) sorts nums itself: destructive, nums is now [1, 2, 3, 4]. JS .sort() with no compare function sorts as text: [10, 9, 1] becomes [1, 10, 9]; use (a, b) => a - b.">
+  <div class="src">diagrams/JP2-03-new-or-changed.tldr</div>
+  <aside class="notes">
+    <p>"<b>Constructive</b> builds a new list. <b>Destructive</b> changes the one you have." Same idea as mutable from Lecture 1.</p>
+    <p>The yellow bar is the activity's bonus card. Why <code>(a, b) =&gt; a - b</code>: without it, JS compares the numbers as text.</p>
+  </aside>
+</section>
+
+<section class="slide" data-seg="Wrap up" data-at="39">
+  <h2>Homework, Part II</h2>
+  <p class="small" style="margin-bottom:10px">Top to bottom: each one is a little harder.</p>
+  <ol class="small" style="padding-left:1.2em">
+    <li><b>Factorial</b> (JS): <code>node factorialSpec.js</code></li>
+    <li><b>Roman Numerals</b> (JS): <code>node romanNumeralsSpec.js</code></li>
+    <li><b>99 Bottles</b> (Python): <code>python3 bottles.py</code></li>
+    <li><b>Factorial</b> (Python): <code>python3 factorial_spec.py</code></li>
+    <li><b>Fibonacci</b> (Python): <code>python3 fibonacci_spec.py</code></li>
+  </ol>
+  <p class="bottomline">Done = every line of the spec prints True / true. Then 50 FreeCodeCamp steps.</p>
+  <aside class="notes">
+    <p>Full steps on the class site (Homework Part II): fork → clone → open → code → run the spec → push.</p>
+    <p>"Spec files check your <b>return</b> value. If you print instead of return, you'll see <code>false</code>."</p>
+  </aside>
+</section>
+
+</div>
+<script src="../shared/deck.js"></script>
+<script src="../shared/codepad.js"></script>
+</body>
+</html>
