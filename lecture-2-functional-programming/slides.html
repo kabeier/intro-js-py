@@ -20,8 +20,9 @@
   <h1>Decisions, loops and functions</h1>
   <p class="sub">How a program reacts to data, repeats work, and wraps logic up to reuse. Same two languages, same code along.</p>
   <aside class="notes">
-    <p><b>Before class:</b> this deck open in <b>Chrome</b>, internet on. Your terminal: <code>node --version</code>, <code>python3 --version</code>.</p>
-    <p>Press <b>T</b>. Students open VS Code; new folder <code>functional</code> (<code>mkdir functional</code>, <code>cd functional</code>, <code>code .</code>).</p>
+    <p><b>Before class:</b> this deck open in <b>Chrome</b>, internet on. Your terminal: Docker running, <code>node:18-alpine</code> and <code>python:3.11-slim</code> pulled.</p>
+    <p>Press <b>T</b>. Students open VS Code; new folder <code>functional</code> (<code>mkdir functional</code>, <code>cd functional</code>, <code>code .</code>), Docker Desktop running.</p>
+    <p><b>Docker, like Lecture 1:</b> students copy <code>Dockerfile.node</code> and <code>Dockerfile.python</code> into <code>functional/</code> (Code Lab 2 has them). Every run: <code>docker build -t js-functional -f Dockerfile.node .</code> then <code>docker run --rm --init js-functional node compare.js</code> (Python: <code>py-functional</code>, <code>python3</code>). Rebuild after every edit.</p>
     <p><b>The code slides are a real editor (Monaco, the editor inside VS Code).</b> Click in and <b>type live</b>: autocomplete and hovers work. <b>Ctrl+S</b> saves (● on the tab = unsaved; the terminal runs the <b>saved</b> file, like real VS Code). Click the terminal and type <code>node file.js</code> / <code>python3 file.py</code>. <b>Ctrl+C</b> stops a program, ↑ repeats a command. <b>Esc</b> leaves the editor. <b>Backup:</b> <b>N</b> types the next prepared chunk, <b>R</b> types and runs the commands for you.</p>
   </aside>
 </section>
@@ -43,7 +44,15 @@
 <!-- ============ COMPARE + CONDITIONALS (3–13) ============ -->
 <section class="slide pad" data-seg="Code along: compare" data-at="3">
   <h2>Comparisons give true or false <span class="say">compare.js · compare.py</span></h2>
-  <div class="vscode" data-folder="functional">
+  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
+<script type="text/plain" data-file="Dockerfile.node" data-hidden data-start>FROM node:18-alpine
+WORKDIR /app
+COPY . .
+CMD ["node", "compare.js"]</script>
+<script type="text/plain" data-file="Dockerfile.python" data-hidden data-start>FROM python:3.11-slim
+WORKDIR /app
+COPY . .
+CMD ["python3", "compare.py"]</script>
 <script type="text/plain" data-file="compare.js" data-step>let age = 18;
 console.log(age >= 18);
 console.log(age < 18);
@@ -87,8 +96,10 @@ console.log(5 === &quot;5&quot;);</pre>
     <p class="tf"><b>compare.py</b> · part 2 (add below, after a blank line)</p>
     <pre># Python&#x27;s == never mixes types
 print(5 == &quot;5&quot;)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node compare.js
-python3 compare.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node compare.js
+docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 compare.py</pre>
     </div>
     <ul>
       <li>Operators: <code>==</code> / <code>===</code>, <code>!=</code> / <code>!==</code>, <code>&gt; &lt; &gt;= &lt;=</code>. Every one gives a boolean.</li>
@@ -100,7 +111,7 @@ python3 compare.py</pre>
 
 <section class="slide pad" data-seg="Code along: conditionals" data-at="6">
   <h2>if / else if / else <span class="say">conditionals.js · conditionals.py</span></h2>
-  <div class="vscode" data-folder="functional" data-term-lines="4">
+  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional" data-term-lines="4">
 <script type="text/plain" data-file="conditionals.js" data-step>let score = 85;
 
 if (score >= 90) {
@@ -185,8 +196,10 @@ if hungry or bored:
     print(&quot;cook a meal&quot;)
 else:
     print(&quot;You don&#x27;t need to eat&quot;)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node conditionals.js
-python3 conditionals.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node conditionals.js
+docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 conditionals.py</pre>
     </div>
     <ul>
       <li>JS: condition in <b>( )</b>, block in <b>{ }</b>. Python: a <b>colon</b> and <b>4-space indent</b>. <code>elif</code> = else if.</li>
@@ -209,7 +222,7 @@ python3 conditionals.py</pre>
 <!-- ============ LOOPS (13–23) ============ -->
 <section class="slide pad" data-seg="Code along: loops" data-at="13">
   <h2>Loop a list: by value, by index, or both <span class="say">loops.js · loops.py</span></h2>
-  <div class="vscode" data-folder="functional">
+  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
 <script type="text/plain" data-file="loops.js" data-step>let colors = ["red", "green", "blue"];
 
 // by value: for...of
@@ -288,8 +301,10 @@ for (const [idx, color] of colors.entries()) {
     <pre># both
 for idx, color in enumerate(colors):
     print(idx, color)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node loops.js
-python3 loops.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node loops.js
+docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 loops.py</pre>
     </div>
     <ul>
       <li><b>By value</b> is the most common. JS is for <b>of</b>; Python is for <b>in</b>.</li>
@@ -302,7 +317,7 @@ python3 loops.py</pre>
 
 <section class="slide pad" data-seg="Code along: more loops" data-at="18">
   <h2>Loop an object or dict, then while <span class="say">more-loops.js · more-loops.py</span></h2>
-  <div class="vscode" data-folder="functional">
+  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
 <script type="text/plain" data-file="more-loops.js" data-step>let user = { name: "Alex", age: 30 };
 
 for (let key in user) {
@@ -371,14 +386,16 @@ while (count &lt; 3) {
 while count &lt; 3:
     print(count)
     count += 1</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node more-loops.js
-python3 more-loops.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node more-loops.js
+docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 more-loops.py</pre>
     </div>
     <ul>
       <li>Objects: JS <code>for…in</code> gives <b>keys</b>; <code>Object.entries</code> gives pairs. Python: <code>.items()</code>. Used all the time for API responses.</li>
       <li><b>while</b>: for when you don't know how many times ahead.</li>
     </ul>
-    <p><b>Break it on purpose (1 min):</b> in the JS, delete <code>count++;</code>, <b>Ctrl+S</b>, run it: <code>0</code> scrolls forever. Click the terminal and press <b>Ctrl+C</b>, exactly as in a real terminal. Undo (Ctrl+Z), save. (It auto-stops after 20 seconds if you forget.)</p>
+    <p><b>Break it on purpose (1 min):</b> in the JS, delete <code>count++;</code>, <b>Ctrl+S</b>, rebuild, run: <code>0</code> scrolls forever. Click the terminal, <b>Ctrl+C</b>. It stops because of <code>--init</code> (without it, Ctrl+C can't stop Node inside a container: tested). Undo, save, rebuild.</p>
   </aside>
 </section>
 
@@ -420,7 +437,7 @@ python3 more-loops.py</pre>
 <!-- ============ FUNCTIONS (29–35) ============ -->
 <section class="slide pad" data-seg="Code along: functions" data-at="29">
   <h2>Write it once, call it often <span class="say">functions.js · functions.py</span></h2>
-  <div class="vscode" data-folder="functional">
+  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
 <script type="text/plain" data-file="functions.js" data-step>function sayHi() {
   console.log("Good Afternoon");
 }
@@ -515,12 +532,14 @@ def greet(name):
 greet(&quot;Alice&quot;)
 result = greet(&quot;Sam&quot;)
 print(result)</pre>
-    <p class="tf">Save + run <code>node functions.js</code> first. Then in <b>functions.js</b> change line 10 to:</p>
+    <p class="tf">Save, rebuild and run it first. Then in <b>functions.js</b> change line 10 to:</p>
     <pre>  return &quot;Good Afternoon &quot; + name;</pre>
-    <p class="tf">Save + run <code>python3 functions.py</code> first. Then in <b>functions.py</b> change line 9 to:</p>
+    <p class="tf">Save, rebuild and run it first. Then in <b>functions.py</b> change line 9 to:</p>
     <pre>    return &quot;Good Afternoon &quot; + name</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node functions.js
-python3 functions.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node functions.js
+docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 functions.py</pre>
     </div>
     <ul>
       <li><b>Declare</b> (JS <code>function</code>) / <b>define</b> (Python <code>def</code>). Nothing happens until you <b>call</b> it.</li>
@@ -543,7 +562,7 @@ python3 functions.py</pre>
 <!-- ============ FUNCTIONAL TOOLS (34–40) ============ -->
 <section class="slide pad" data-seg="Code along: functional tools" data-at="34">
   <h2>Arrow, lambda, filter, sort, map <span class="say">functional.js · functional.py</span></h2>
-  <div class="vscode" data-folder="functional">
+  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
 <script type="text/plain" data-file="functional.js" data-step>const multiply = (a, b) => a * b;
 console.log(multiply(3, 4));</script>
 <script type="text/plain" data-file="functional.py" data-step>multiply = lambda a, b: a * b
@@ -592,8 +611,10 @@ console.log(nums);</pre>
     <p class="tf"><b>functional.py</b> · part 3 (add below, after a blank line)</p>
     <pre>sorted_nums = sorted(nums)
 print(sorted_nums, nums)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node functional.js
-python3 functional.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node functional.js
+docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 functional.py</pre>
     </div>
     <ul>
       <li><b>Arrow</b> (JS) / <b>lambda</b> (Python): a one-line function. Used inside filter, map and sort.</li>

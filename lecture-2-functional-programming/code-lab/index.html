@@ -83,14 +83,23 @@
         <div class="cmdwrap"><pre class="cmd"><code>mkdir functional
 cd functional
 code .</code></pre><button type="button" class="copy">Copy</button></div></li>
-      <li>No Node or Python? The Docker commands are in <a href="../../lecture-1-js-python-fundamentals/code-lab/#nodocker">Code Lab 1</a>. <b>Windows:</b> <code>python</code> instead of <code>python3</code>.</li>
+      <li>Copy the two Dockerfiles into <code>functional/</code> (same as Code Lab 1, with today's file as the default):
+        <div class="cmdwrap"><pre class="cmd"><code>FROM node:18-alpine
+WORKDIR /app
+COPY . .
+CMD ["node", "compare.js"]</code></pre><button type="button" class="copy">Copy</button></div>
+        <div class="cmdwrap"><pre class="cmd"><code>FROM python:3.11-slim
+WORKDIR /app
+COPY . .
+CMD ["python3", "compare.py"]</code></pre><button type="button" class="copy">Copy</button></div>
+        Save them as <code>Dockerfile.node</code> and <code>Dockerfile.python</code>. Images today: <code>js-functional</code> and <code>py-functional</code>. Rebuild after every edit.</li>
       <li>Python counts spaces: indent with <b>4 spaces</b> (VS Code's Tab key does this in a <code>.py</code> file).</li>
     </ol>
   </section>
 
   <section id="s1">
     <h2><span class="n">1 ·</span> Comparisons give true or false</h2>
-    <p>New files: <code>compare.js</code> and <code>compare.py</code>. Type each block yourself (copy only if you fall behind), save, run.</p>
+    <p>New files: <code>compare.js</code> and <code>compare.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
     <p class="label">compare.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>let age = 18;
 console.log(age &gt;= 18);
@@ -100,7 +109,8 @@ console.log(age === 18, age !== 21);</code></pre><button type="button" class="co
     <div class="cmdwrap"><pre class="cmd"><code>// === also checks the type. Use it.
 console.log(5 == &quot;5&quot;);
 console.log(5 === &quot;5&quot;);</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>node compare.js</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node compare.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">true
 false
 true true
@@ -114,7 +124,8 @@ print(age == 18, age != 21)</code></pre><button type="button" class="copy">Copy<
     <p class="label">compare.py · part 2 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code># Python&#x27;s == never mixes types
 print(5 == &quot;5&quot;)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>python3 compare.py</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 compare.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">True
 False
 True True
@@ -123,7 +134,7 @@ False</pre>
 
   <section id="s2">
     <h2><span class="n">2 ·</span> if / else if / else</h2>
-    <p>New files: <code>conditionals.js</code> and <code>conditionals.py</code>. Type each block yourself (copy only if you fall behind), save, run.</p>
+    <p>New files: <code>conditionals.js</code> and <code>conditionals.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
     <p class="label">conditionals.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>let score = 85;
 
@@ -146,7 +157,8 @@ if (age &gt;= 21 &amp;&amp; hasId) {
 } else {
   console.log(&quot;This person is a minor&quot;);
 }</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>node conditionals.js</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node conditionals.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Pass
 This adult can drink</pre>
     <p class="label">conditionals.py · part 1</p>
@@ -167,14 +179,15 @@ if hungry or bored:
     print(&quot;cook a meal&quot;)
 else:
     print(&quot;You don&#x27;t need to eat&quot;)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>python3 conditionals.py</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 conditionals.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Pass
 cook a meal</pre>
   </section>
 
   <section id="s3">
     <h2><span class="n">3 ·</span> Loop a list: by value, by index, or both</h2>
-    <p>New files: <code>loops.js</code> and <code>loops.py</code>. Type each block yourself (copy only if you fall behind), save, run.</p>
+    <p>New files: <code>loops.js</code> and <code>loops.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
     <p class="label">loops.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>let colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
 
@@ -192,7 +205,8 @@ for (let i = 0; i &lt; colors.length; i++) {
 for (const [idx, color] of colors.entries()) {
   console.log(idx, color);
 }</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>node loops.js</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node loops.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">red
 green
 blue
@@ -216,7 +230,8 @@ for idx in range(len(colors)):
     <div class="cmdwrap"><pre class="cmd"><code># both
 for idx, color in enumerate(colors):
     print(idx, color)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>python3 loops.py</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 loops.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">red
 green
 blue
@@ -230,7 +245,7 @@ blue
 
   <section id="s4">
     <h2><span class="n">4 ·</span> Loop an object or dict, then while</h2>
-    <p>New files: <code>more-loops.js</code> and <code>more-loops.py</code>. Type each block yourself (copy only if you fall behind), save, run.</p>
+    <p>New files: <code>more-loops.js</code> and <code>more-loops.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
     <p class="label">more-loops.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>let user = { name: &quot;Alex&quot;, age: 30 };
 
@@ -246,7 +261,8 @@ while (count &lt; 3) {
   console.log(count);
   count++;
 }</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>node more-loops.js</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node more-loops.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">name
 age
 name Alex
@@ -266,7 +282,8 @@ for key, value in user.items():
 while count &lt; 3:
     print(count)
     count += 1</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>python3 more-loops.py</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 more-loops.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">name
 age
 name Alex
@@ -278,7 +295,7 @@ age 30
 
   <section id="s5">
     <h2><span class="n">5 ·</span> Write it once, call it often</h2>
-    <p>New files: <code>functions.js</code> and <code>functions.py</code>. Type each block yourself (copy only if you fall behind), save, run.</p>
+    <p>New files: <code>functions.js</code> and <code>functions.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
     <p class="label">functions.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>function sayHi() {
   console.log(&quot;Good Afternoon&quot;);
@@ -295,7 +312,8 @@ function greet(name) {
 greet(&quot;Alice&quot;);
 let result = greet(&quot;Sam&quot;);
 console.log(result);</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>node functions.js</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node functions.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Good Afternoon
 Good Afternoon
 Good Afternoon Alice
@@ -317,7 +335,8 @@ function greet(name) {
 greet(&quot;Alice&quot;);
 let result = greet(&quot;Sam&quot;);
 console.log(result);</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>node functions.js</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node functions.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Good Afternoon
 Good Afternoon
 Good Afternoon Sam</pre>
@@ -335,7 +354,8 @@ def greet(name):
 greet(&quot;Alice&quot;)
 result = greet(&quot;Sam&quot;)
 print(result)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>python3 functions.py</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 functions.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Good Afternoon
 Good Afternoon
 Good Afternoon Alice
@@ -355,7 +375,8 @@ def greet(name):
 greet(&quot;Alice&quot;)
 result = greet(&quot;Sam&quot;)
 print(result)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>python3 functions.py</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 functions.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Good Afternoon
 Good Afternoon
 Good Afternoon Sam</pre>
@@ -363,7 +384,7 @@ Good Afternoon Sam</pre>
 
   <section id="s6">
     <h2><span class="n">6 ·</span> Arrow, lambda, filter, sort, map</h2>
-    <p>New files: <code>functional.js</code> and <code>functional.py</code>. Type each block yourself (copy only if you fall behind), save, run.</p>
+    <p>New files: <code>functional.js</code> and <code>functional.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
     <p class="label">functional.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>const multiply = (a, b) =&gt; a * b;
 console.log(multiply(3, 4));</code></pre><button type="button" class="copy">Copy</button></div>
@@ -375,7 +396,8 @@ console.log(evens, doubled, nums);</code></pre><button type="button" class="copy
     <p class="label">functional.js · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>nums.sort((a, b) =&gt; a - b);
 console.log(nums);</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>node functional.js</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-functional -f Dockerfile.node .
+docker run --rm --init js-functional node functional.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">12
 [ 4, 2 ] [ 6, 2, 8, 4 ] [ 3, 1, 4, 2 ]
 [ 1, 2, 3, 4 ]</pre>
@@ -390,15 +412,16 @@ print(evens, doubled, nums)</code></pre><button type="button" class="copy">Copy<
     <p class="label">functional.py · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>sorted_nums = sorted(nums)
 print(sorted_nums, nums)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>python3 functional.py</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-functional -f Dockerfile.python .
+docker run --rm --init py-functional python3 functional.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">12
 [4, 2] [6, 2, 8, 4] [3, 1, 4, 2]
 [1, 2, 3, 4] [3, 1, 4, 2]</pre>
   </section>
   <section id="loop">
     <h2>Break it on purpose · an infinite loop</h2>
-    <p>In <code>more-loops.js</code>, delete the line <code>count++;</code> and run it again. <code>count</code> stays 0 forever, so <code>0</code> prints forever.</p>
-    <p><b>Stop it:</b> click in the terminal and press <b>Ctrl+C</b> (Mac too: Control, not Command). Put the line back. Same in Python with <code>count += 1</code>.</p>
+    <p>In <code>more-loops.js</code>, delete the line <code>count++;</code>, save, <b>build</b>, run. <code>count</code> stays 0 forever, so <code>0</code> prints forever.</p>
+    <p><b>Stop it:</b> click in the terminal and press <b>Ctrl+C</b> (Mac too: Control, not Command). It works because of <code>--init</code>: without it, Node ignores Ctrl+C inside a container (then: <code>docker ps</code> and <code>docker stop &lt;name&gt;</code> in another terminal). Put the line back, rebuild. Same in Python with <code>count += 1</code>.</p>
   </section>
 
   <section>

@@ -86,7 +86,7 @@ print(user_name)</pre></div>
 
 <!-- ============ SET UP (7–13) ============ -->
 <section class="slide" data-seg="Your terminal: set up" data-at="7">
-  <h2>Set up: one folder, two runtimes</h2>
+  <h2>Set up: one folder, and Docker running</h2>
   <div class="cols cmdbox" style="gap:40px">
     <div>
       <p class="small" style="margin-bottom:10px"><b>1 · Make the folder, open it in VS Code</b></p>
@@ -96,75 +96,85 @@ code .</pre>
       <p class="small muted" style="margin-top:12px"><code>code</code> not found? VS Code → File → Open Folder.</p>
     </div>
     <div>
-      <p class="small" style="margin-bottom:10px"><b>2 · Check both runtimes</b> (VS Code terminal: <b>Ctrl+`</b>)</p>
-      <pre>node --version
-python3 --version</pre>
-      <p class="small muted" style="margin-top:12px">Windows: <code>python --version</code>. Any v18+ and 3.10+ is fine.</p>
+      <p class="small" style="margin-bottom:10px"><b>2 · Docker is running</b> (VS Code terminal: <b>Ctrl+`</b>)</p>
+      <pre>docker --version
+docker run --rm hello-world</pre>
+      <p class="small muted" style="margin-top:12px">Mac/Windows: open Docker Desktop first. Same check as Monday.</p>
     </div>
   </div>
-  <p class="bottomline">Missing one? Docker runs it for you (Code Lab 1, "No Node or Python?").</p>
+  <p class="bottomline">No Node or Python to install: Docker brings them.</p>
   <aside class="notes">
-    <p><b>** YOUR TERMINAL, about 2 minutes. **</b> Do it live in your real terminal. Thumbs up in chat when both versions print.</p>
+    <p><b>** YOUR TERMINAL, about 2 minutes. **</b> Thumbs up when "Hello from Docker!" prints.</p>
     <ul>
       <li>Mac: <code>code</code> missing → Command Palette → "Shell Command: Install 'code' command in PATH".</li>
-      <li>Missing runtime → don't install now. Code Lab 1 has the Docker one-liner (bind mount from the Docker lecture).</li>
+      <li>"Cannot connect to the Docker daemon" → Docker Desktop isn't running (Monday's fix table, Terminal Lab 1).</li>
+      <li>Pull the two images now so the first build is quick: <code>docker pull node:18-alpine</code>, <code>docker pull python:3.11-slim</code>.</li>
     </ul>
   </aside>
 </section>
 
-<section class="slide pad" data-seg="Code along: first run" data-at="9">
+<section class="slide" data-seg="Docker set up" data-at="9">
+  <h2>Two Dockerfiles: one runtime each</h2>
+  <div class="cols" style="gap:40px">
+    <div><p class="small" style="margin-bottom:8px"><b>Dockerfile.node</b></p>
+      <pre style="font-size:22px">FROM node:18-alpine
+WORKDIR /app
+COPY . .
+CMD ["node", "example.js"]</pre></div>
+    <div><p class="small" style="margin-bottom:8px"><b>Dockerfile.python</b></p>
+      <pre style="font-size:22px">FROM python:3.11-slim
+WORKDIR /app
+COPY . .
+CMD ["python3", "example.py"]</pre></div>
+  </div>
+  <pre style="font-size:19px; margin-top:20px; padding:14px 22px">docker build -t js-fundamentals -f Dockerfile.node .     docker run --rm --init js-fundamentals node primitives.js
+docker build -t py-fundamentals -f Dockerfile.python .   docker run --rm --init py-fundamentals python3 primitives.py</pre>
+  <p class="bottomline">Build after every edit: COPY is a snapshot. Switch languages by switching the base image.</p>
+  <aside class="notes">
+    <p><b>** CODE ALONG, about 2 minutes. ** Students make both files</b> in <code>fundamentals/</code>. The lesson's Dockerfiles, with one change: <code>COPY . .</code> instead of <code>COPY example.js .</code>, so one image holds every file we write today. Two Dockerfiles in one folder need two names; <code>-f</code> picks one.</p>
+    <ul>
+      <li><code>docker run … node primitives.js</code>: the words after the image name replace the CMD, so the same image runs any file.</li>
+      <li><b>--init</b>: without it, Ctrl+C can't stop Node in a container (tested: Node is process #1 and ignores it). Lecture 2's infinite loop needs it.</li>
+      <li>Forget to rebuild after an edit → the old code runs (Monday: "COPY happens at build time"). Forget a new file → <code>Cannot find module '/app/variables.js'</code>.</li>
+      <li>Mac/Linux: <code>docker build … && docker run …</code> runs both in one line. ↑ repeats the last command.</li>
+    </ul>
+  </aside>
+</section>
+
+<section class="slide pad" data-seg="Code along: first run" data-at="10">
   <h2>Your first two files <span class="say">create example.js and example.py, then run each</span></h2>
-  <div class="vscode" data-folder="fundamentals">
+  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
+<script type="text/plain" data-file="Dockerfile.node" data-hidden data-start>FROM node:18-alpine
+WORKDIR /app
+COPY . .
+CMD ["node", "example.js"]</script>
+<script type="text/plain" data-file="Dockerfile.python" data-hidden data-start>FROM python:3.11-slim
+WORKDIR /app
+COPY . .
+CMD ["python3", "example.py"]</script>
 <script type="text/plain" data-file="example.js" data-step>console.log("Hello from JavaScript");</script>
 <script type="text/plain" data-file="example.py" data-step>print("Hello from Python")</script>
 <script type="text/plain" data-file="example.js" data-expect>Hello from JavaScript</script>
 <script type="text/plain" data-file="example.py" data-expect>Hello from Python</script>
   </div>
   <aside class="notes">
-    <p><b>** CODE ALONG, about 2 minutes. **</b> Students: new file <code>example.js</code>, then <code>example.py</code> (Explorer → New File).</p>
+    <p><b>** CODE ALONG, about 3 minutes. **</b> Students: new files <code>example.js</code>, <code>example.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
     <p class="tf"><b>example.js</b> · part 1</p>
     <pre>console.log(&quot;Hello from JavaScript&quot;);</pre>
     <p class="tf"><b>example.py</b> · part 1</p>
     <pre>print(&quot;Hello from Python&quot;)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node example.js
-python3 example.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+docker run --rm --init js-fundamentals node example.js
+docker build -t py-fundamentals -f Dockerfile.python .
+docker run --rm --init py-fundamentals python3 example.py</pre>
     </div>
     <ul>
-      <li><b>Type it live:</b> click in <code>example.js</code>, type the line, <b>Ctrl+S</b>. Click the left terminal, type <code>node example.js</code>, Enter. Same for Python on the right. (Backup: N, N, R.)</li>
-      <li>Show the ● on the tab before you save, and run once <b>unsaved</b>: nothing prints. "The terminal runs the saved file. Ctrl+S, every time."</li>
-      <li>Point at the terminal: "<code>node example.js</code> and <code>python3 example.py</code>. Type those in your own terminal."</li>
-      <li><code>console.log()</code> logs to the console where the code runs. <code>print()</code> prints to the terminal.</li>
+      <li>Type the line, <b>Ctrl+S</b>. Left terminal: <code>docker build -t js-fundamentals -f Dockerfile.node .</code>, then <code>docker run --rm --init js-fundamentals node example.js</code>. Right terminal: the Python pair. (Backup: N, N, R.)</li>
+      <li>The build prints <code>[+] Building … FINISHED</code> and <code>naming to … js-fundamentals</code>; the run prints <b>Hello from JavaScript</b>.</li>
+      <li><code>console.log()</code> logs to the console where the code runs; <code>print()</code> prints to the terminal.</li>
     </ul>
-    <p><b>Watch for:</b> "No such file": they're not in the <code>fundamentals</code> folder (<code>cd fundamentals</code>), or the file wasn't saved (<b>Ctrl+S</b>).</p>
-  </aside>
-</section>
-
-<section class="slide" data-seg="Docker set up" data-at="11">
-  <h2>The same files, in Docker</h2>
-  <div class="cols" style="gap:40px">
-    <div><p class="small" style="margin-bottom:8px"><b>Dockerfile.node</b></p>
-      <pre style="font-size:22px">FROM node:18-alpine
-WORKDIR /app
-COPY example.js .
-CMD ["node", "example.js"]</pre></div>
-    <div><p class="small" style="margin-bottom:8px"><b>Dockerfile.python</b></p>
-      <pre style="font-size:22px">FROM python:3.11-slim
-WORKDIR /app
-COPY example.py .
-CMD ["python3", "example.py"]</pre></div>
-  </div>
-  <pre style="font-size:20px; margin-top:22px; padding:16px 24px">docker build -t hello-js -f Dockerfile.node .     &amp;&amp;  docker run --rm hello-js
-docker build -t hello-py -f Dockerfile.python .   &amp;&amp;  docker run --rm hello-py</pre>
-  <p class="bottomline">Switch languages by switching the base image.</p>
-  <aside class="notes">
-    <p><b>** YOUR DEMO, about 2 minutes. ** Students watch</b>; it's in Code Lab 1 for later.</p>
-    <ul>
-      <li>The two Dockerfiles are the curriculum's, word for word. Two in one folder need two names, so <code>-f</code> picks the file.</li>
-      <li>Prints <code>Hello from JavaScript</code> / <code>Hello from Python</code>.</li>
-      <li>"Docker lets us write down exactly which runtime the code needs. Same as last lecture."</li>
-    </ul>
-    <p><b>Pre-pull at home:</b> <code>node:18-alpine</code> and <code>python:3.11-slim</code> (RUNBOOK).</p>
+    <p><b>Watch for:</b> "failed to read dockerfile" = wrong <code>-f</code> name or not in <code>fundamentals/</code>. First build is slow if the base image isn't pulled yet.</p>
   </aside>
 </section>
 
@@ -183,7 +193,7 @@ docker build -t hello-py -f Dockerfile.python .   &amp;&amp;  docker run --rm he
 
 <section class="slide pad" data-seg="Code along: variables" data-at="14">
   <h2>Variables and naming <span class="say">variables.js · variables.py</span></h2>
-  <div class="vscode" data-folder="fundamentals">
+  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
 <script type="text/plain" data-file="variables.js" data-step>let userName = "Alex";
 console.log(userName);</script>
 <script type="text/plain" data-file="variables.py" data-step>user_name = "Alex"
@@ -236,8 +246,10 @@ console.log(favoriteColor, MAX_USERS);</pre>
 favorite_color = &quot;blue&quot;
 MAX_USERS = 30
 print(favorite_color, MAX_USERS)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node variables.js
-python3 variables.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+docker run --rm --init js-fundamentals node variables.js
+docker build -t py-fundamentals -f Dockerfile.python .
+docker run --rm --init py-fundamentals python3 variables.py</pre>
     </div>
     <ul>
       <li>Run after the first pair (type the commands in the terminals, or <b>R</b>) so they see it work early.</li>
@@ -250,7 +262,7 @@ python3 variables.py</pre>
 
 <section class="slide pad" data-seg="Code along: primitives" data-at="18">
   <h2>Primitive types: one value each <span class="say">primitives.js · primitives.py</span></h2>
-  <div class="vscode" data-folder="fundamentals">
+  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
 <script type="text/plain" data-file="primitives.js" data-step>let message = "Hello, world!";
 console.log(message);
 let count = 10;
@@ -316,8 +328,10 @@ console.log(value);</pre>
     <p class="tf"><b>primitives.py</b> · part 3 (add below, after a blank line)</p>
     <pre>price = 9.99
 print(type(price), type(count))</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node primitives.js
-python3 primitives.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+docker run --rm --init js-fundamentals node primitives.js
+docker build -t py-fundamentals -f Dockerfile.python .
+docker run --rm --init py-fundamentals python3 primitives.py</pre>
     </div>
     <ul>
       <li><b>Strings</b> use quotes. We use <b>double quotes</b>, so an apostrophe (<code>"it's"</code>) never breaks it.</li>
@@ -377,7 +391,7 @@ python3 primitives.py</pre>
 
 <section class="slide pad" data-seg="Code along: collections" data-at="29">
   <h2>Lists, objects and dicts <span class="say">collections.js · collections.py</span></h2>
-  <div class="vscode" data-folder="fundamentals">
+  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
 <script type="text/plain" data-file="collections.js" data-step>// idxs         0       1       2
 let colors = ["red", "green", "blue"];
 console.log(colors);
@@ -442,8 +456,10 @@ console.log(user);</pre>
 user[&quot;city&quot;] = &quot;Chicago&quot;
 del user[&quot;age&quot;]
 print(user)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node collections.js
-python3 collections.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+docker run --rm --init js-fundamentals node collections.js
+docker build -t py-fundamentals -f Dockerfile.python .
+docker run --rm --init py-fundamentals python3 collections.py</pre>
     </div>
     <ul>
       <li>Lists hold any mix of types. Node prints strings in single quotes: that's just how it displays them.</li>
@@ -457,7 +473,7 @@ python3 collections.py</pre>
 <!-- ============ MUTABLE (34–40) ============ -->
 <section class="slide pad" data-seg="Code along: mutable" data-at="34">
   <h2>Can it change? <span class="say">mutable.js · mutable.py</span></h2>
-  <div class="vscode" data-folder="fundamentals">
+  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
 <script type="text/plain" data-file="mutable.js" data-step>// a list is mutable: it changes in place
 let colors = ["red", "green"];
 colors.push("blue");
@@ -522,8 +538,10 @@ console.log(colors);</pre>
 copy = colors
 copy.append(&quot;pink&quot;)
 print(colors)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminals:</p><pre>node mutable.js
-python3 mutable.py</pre>
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+docker run --rm --init js-fundamentals node mutable.js
+docker build -t py-fundamentals -f Dockerfile.python .
+docker run --rm --init py-fundamentals python3 mutable.py</pre>
     </div>
     <ul>
       <li>Before step 5, ask chat: <b>"What will colors print?"</b> Most say 3 colors. It's 4.</li>
@@ -549,12 +567,12 @@ python3 mutable.py</pre>
 <section class="slide" data-seg="Wrap up" data-at="39">
   <h2>Homework, Part I</h2>
   <ol style="list-style:none;padding-left:0" class="small">
-    <li><b>Priority 1, Code Lab 1:</b> every file from today in your <code>fundamentals</code> folder, running in <b>your</b> terminal, output matching</li>
+    <li><b>Priority 1, Code Lab 1:</b> every file from today in your <code>fundamentals</code> folder, built and run with <b>Docker</b> in your terminal, output matching</li>
     <li><b>Priority 2, FreeCodeCamp:</b> 50 steps of your current certification</li>
   </ol>
   <div class="card green" style="margin-top:28px">
     <h3>Come to Lecture 2 ready</h3>
-    <p class="small"><code>node example.js</code> and <code>python3 example.py</code> must work. Lecture 2 is decisions, loops and functions, all code along.</p>
+    <p class="small"><code>docker run --rm --init js-fundamentals node example.js</code> must print. Lecture 2 is decisions, loops and functions, all code along, all through Docker.</p>
   </div>
   <aside class="notes">
     <p>Full steps are on the class site (Homework Part I). The five algorithm assignments come after Lecture 2: they need loops and functions.</p>

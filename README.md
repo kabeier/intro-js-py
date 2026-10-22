@@ -1,6 +1,6 @@
 # JavaScript and Python
 
-Lecture site for Code Platoon Phase I, **Fundamentals: JavaScript and Python**: the same ideas written in both languages, side by side. Code along: students type every file in their own VS Code and run it in their own terminal.
+Lecture site for Code Platoon Phase I, **Fundamentals: JavaScript and Python**: the same ideas written in both languages, side by side. Code along: students type every file in their own VS Code and run it through Docker (the lesson's Dockerfiles) in their own terminal.
 
 **Live site:** https://kabeier.github.io/intro-js-py/
 

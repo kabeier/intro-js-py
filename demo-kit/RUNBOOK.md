@@ -1,6 +1,6 @@
 # Live demo runbook: JavaScript and Python, code along
 
-**The story:** both lectures are code along. Students type every file in **their own VS Code** and run it in **their own terminal**. You present from the slides: each code slide is a real editor (Monaco, the editor inside VS Code) with a terminal you type commands into, and the code really runs. No app, no Claude prompt.
+**The story:** both lectures are code along. Students type every file in **their own VS Code** and run it **through Docker** in **their own terminal**, as the lesson sets up: `docker build -t js-fundamentals -f Dockerfile.node .` then `docker run --rm --init js-fundamentals node <file>` (Python: `py-fundamentals`, `python3`). Rebuild after every edit. You present from the slides: each code slide is a real editor (Monaco, the editor inside VS Code) with a terminal you type commands into, and the code really runs. No app, no Claude prompt.
 - **Lecture 1 (JS & Python Fundamentals):** why both, runtimes, variables, primitive types, lists/objects/dicts, mutable vs immutable. Folder: `fundamentals/`.
 - **Lecture 2 (Functional Programming):** comparisons, if/else, loops, while, functions and return, arrow/lambda, filter/sort/map. Folder: `functional/`.
 
@@ -27,13 +27,18 @@ It's **Monaco, the editor inside VS Code**, plus a terminal you type into. Work 
 ## Setup (once, before Lecture 1)
 
 ```bash
-node --version          # any v18+
-python3 --version       # any 3.10+
-docker pull node:18-alpine && docker pull python:3.11-slim     # for the Docker slide (L1 slide 7)
+docker --version
+docker pull node:18-alpine && docker pull python:3.11-slim
 ```
-- Open both decks in **Chrome** once with internet on, so Monaco and Python are cached.
-- Have the **Code Lab** page open in a tab: students copy from there when they fall behind.
-- Know where the finished files are: `demo-kit/fundamentals/` and `demo-kit/functional/`.
+- Open both decks in **Chrome** once with internet on, so the editor and Python are cached.
+- Have the **Code Lab** page open in a tab: students copy the Dockerfiles and commands from there.
+- Know where the finished files are: `demo-kit/fundamentals/` and `demo-kit/functional/` (each with its two Dockerfiles).
+
+### The practice `docker` in the slides
+- `docker build` reads the slide's Dockerfile and takes a **snapshot** of the files (COPY). `docker run --rm --init <image> node|python3 <file>` runs that snapshot. Program output and exit codes were checked against real Docker for every code slide.
+- It behaves like real Docker on purpose: run before building → "pull access denied"; edit without rebuilding → the old output; a new file without rebuilding → "Cannot find module '/app/…'"; an unchanged rebuild → `CACHED [3/3] COPY . .`.
+- The build shows Docker's key lines only; real terminals print more (and pull the base image the first time).
+- **--init:** tested on real Docker: without it, Ctrl+C can't stop Node in a container (Node is process #1). The slides copy that too.
 
 ## Dry run (the night before), then reset
 
@@ -48,9 +53,9 @@ docker pull node:18-alpine && docker pull python:3.11-slim     # for the Docker 
 | 1 (0) | Deck | Press **T**. VS Code + terminal open | "You'll type every line today." |
 | 2 (1) | Deck | Ask for 3 differences | "Same idea, two spellings." |
 | 3–4 (3–5) | Deck | Why both, runtime diagram | "Both are interpreted: a runtime reads your file line by line." |
-| 5 (7) | Your terminal | `mkdir fundamentals`, `cd fundamentals`, `code .`, both `--version`s | "Thumbs up when both print." |
-| 6 (9) | Codepad | Type the line, Ctrl+S, type `node example.js` in the terminal (backup: N, N, R) | "The ● means unsaved. The terminal runs the saved file." |
-| 7 (11) | Your terminal | The two `docker build … -f …` + `docker run --rm …` | "Switch languages by switching the base image." |
+| 5 (7) | Your terminal | `mkdir fundamentals`, `cd fundamentals`, `code .`, `docker --version`, `docker run --rm hello-world` | "Docker brings Node and Python." |
+| 6 (9) | Deck | The two Dockerfiles (COPY . .), build + run, --init | "Build after every edit: COPY is a snapshot." |
+| 7 (10) | Codepad | Type the line, Ctrl+S, `docker build …`, `docker run --rm --init … node example.js` (backup: N, N, R) | "Same two commands all day; ↑ repeats them." |
 | 8 (13) | Deck | Labeled box | "Use `let` for now." |
 | 9 (14) | Codepad | N N R, N N, N N R | "Same label, new contents." |
 | 10 (18) | Codepad | 6 × N, R | "`true` vs `True`: the capital letter." |

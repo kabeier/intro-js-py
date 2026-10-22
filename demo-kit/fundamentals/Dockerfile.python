@@ -1,4 +1,4 @@
 FROM python:3.11-slim
 WORKDIR /app
-COPY example.py .
+COPY . .
 CMD ["python3", "example.py"]
