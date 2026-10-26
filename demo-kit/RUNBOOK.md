@@ -13,6 +13,7 @@ It's **Monaco, the editor inside VS Code**, plus a terminal you type into. Work 
 | Type code | Click in the editor. Autocomplete, hovers, Ctrl+/ comments, Ctrl+Z, multi-cursor all work |
 | Save | **Ctrl+S**. ● on the tab = unsaved. **The terminal runs the saved file**, like real VS Code (show this once: it's the #1 student bug) |
 | Run | Click the terminal under the file, type `node file.js` or `python3 file.py`, Enter. Or the **▶ Run** button on the tab, or **Ctrl+Enter** in the editor (saves + runs) |
+| Read a Dockerfile | Click **Dockerfile.node** / **Dockerfile.python** in the Explorer: it opens **read-only** in the editor area. × or **Esc** closes it. Works for files from earlier slides too |
 | Stop a program | Click the terminal, **Ctrl+C** (auto-stops after 20 s if you forget) |
 | Terminal extras | ↑ ↓ history · Tab completes file names · `ls`, `cat file`, `clear`, `python3 --version` |
 | Leave the editor | **Esc**, so → / ← change slides again (keys typed in the terminal never change slides) |
