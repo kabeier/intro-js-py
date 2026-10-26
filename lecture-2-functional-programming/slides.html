@@ -9,6 +9,15 @@
 <style>
   .gym { font-size: 30px; }
   .gym li { margin-bottom: 10px; }
+  .cvd-start { font-size: 24px; margin: 0 0 18px; display: flex; align-items: center; gap: 8px; white-space: nowrap; max-width: none; }
+  .cvd-new, .cvd-chg { display: inline-block; padding: 2px 12px; border-radius: 6px; margin-left: 10px; font-size: 21px; }
+  .cvd-new { background: #e3f5ec; border: 2px solid #1f8a5b; } .cvd-chg { background: #fde4e4; border: 2px solid #c53030; }
+  .dbt.cvd { font-size: 22px; width: 100%; }
+  .dbt.cvd td { white-space: nowrap; }
+  .cvd-bl code { white-space: nowrap; }
+  .dbt.cvd tr.new td { background: #e3f5ec; } .dbt.cvd tr.chg td { background: #fde4e4; }
+  .dbt.cvd td:first-child, .dbt.cvd td.r { font-family: var(--body); }
+  .dbt.cvd td.r { font-size: 19px; line-height: 1.3; }
 </style>
 </head>
 <body data-minutes="40">
@@ -625,12 +634,27 @@ docker run --rm --init py-functional python3 functional.py</pre>
   </aside>
 </section>
 
-<section class="slide diagram" data-seg="Constructive vs destructive" data-at="38">
-  <img src="../diagrams/JP2-03-new-or-changed.png" alt="Constructive makes a new list; destructive changes yours. From nums [3, 1, 4, 2]: filter gives a new evens [4, 2]; map or a list comprehension gives a new doubled [6, 2, 8, 4]; Python sorted(nums) gives a new [1, 2, 3, 4]. These are constructive and nums is untouched. JS nums.sort(…) sorts nums itself: destructive, nums is now [1, 2, 3, 4]. JS .sort() with no compare function sorts as text: [10, 9, 1] becomes [1, 10, 9]; use (a, b) => a - b.">
-  <div class="src">diagrams/JP2-03-new-or-changed.tldr</div>
+<section class="slide" data-seg="Constructive vs destructive" data-at="38">
+  <h2>New list, or changes yours?</h2>
+  <p class="cvd-start">Start: <code>nums = [3, 1, 4, 2]</code> &nbsp; <span class="cvd-new"><b>constructive</b> = a NEW list</span> <span class="cvd-chg"><b>destructive</b> = changes nums</span></p>
+  <table class="dbt small cvd">
+    <tr><th>You want…</th><th>JavaScript</th><th>Python</th><th>Result</th></tr>
+    <tr class="new"><td>keep the evens</td><td>nums.filter(n =&gt; n % 2 === 0)</td><td>list(filter(lambda n: n % 2 == 0, nums))</td><td class="r">new <b>[4, 2]</b><br>nums still [3, 1, 4, 2]</td></tr>
+    <tr class="new"><td>double each</td><td>nums.map(n =&gt; n * 2)</td><td>[n * 2 for n in nums]</td><td class="r">new <b>[6, 2, 8, 4]</b><br>nums still [3, 1, 4, 2]</td></tr>
+    <tr class="new"><td>a sorted copy</td><td>[...nums].sort((a, b) =&gt; a - b)</td><td>sorted(nums)</td><td class="r">new <b>[1, 2, 3, 4]</b><br>nums still [3, 1, 4, 2]</td></tr>
+    <tr class="chg"><td>sort nums <b>itself</b></td><td>nums.sort((a, b) =&gt; a - b)</td><td>nums.sort()</td><td class="r"><b>nums is now [1, 2, 3, 4]</b></td></tr>
+  </table>
+  <p class="bottomline cvd-bl">JS <code>.sort()</code> alone sorts as <b>text</b>: <code>[10, 9, 1]</code> → <code>[1, 10, 9]</code><br>Always add <code>(a, b) =&gt; a - b</code></p>
   <aside class="notes">
     <p>"<b>Constructive</b> builds a new list. <b>Destructive</b> changes the one you have." Same idea as mutable from Lecture 1.</p>
+    <ul>
+      <li>Read it <b>row by row</b>: same task, JS on the left, Python on the right. Green rows leave <code>nums</code> alone; the red row changes it.</li>
+      <li>What we typed in slide 12: JS <code>nums.sort(…)</code> = the <b>red</b> row. Python <code>sorted(nums)</code> = the <b>green</b> sorted-copy row. That's why the two terminals printed different <code>nums</code>.</li>
+      <li><code>[...nums]</code> = "a copy of nums" (spread). Sort the copy, and nums is safe.</li>
+      <li>Trap: Python <code>nums.sort()</code> returns <code>None</code>. <code>x = nums.sort()</code> gives you <code>None</code>.</li>
+    </ul>
     <p>The yellow bar is the activity's bonus card. Why <code>(a, b) =&gt; a - b</code>: without it, JS compares the numbers as text.</p>
+    <p>Every row checked in real Node and Python.</p>
   </aside>
 </section>
 

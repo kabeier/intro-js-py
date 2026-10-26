@@ -89,7 +89,7 @@ docker pull node:18-alpine && docker pull python:3.11-slim
 | 10 (29) | Codepad | 4 × N, R ("what is result?"), N N (yellow line), R | "Printing is not returning." |
 | 11 (33) | Deck | Function machine | "Parameters are placeholders; arguments are values." |
 | 12 (34) | Codepad | N N R, N N R, N N R | "JS `.sort()` changes nums itself." |
-| 13 (38) | Deck | Constructive vs destructive | "New list, or yours changed?" |
+| 13 (38) | Deck | Constructive vs destructive: JS vs Python table, row by row. Green = new list, red = changes nums | "Slide 12: JS sort was the red row, Python sorted() the green one." |
 | 14 (39) | Deck | Homework | "Spec files check what you return." |
 
 **Time check, Lecture 2:**
