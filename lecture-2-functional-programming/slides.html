@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lecture 2 · Functional Programming</title>
 <link rel="stylesheet" href="../shared/deck.css">
-<link rel="stylesheet" href="../shared/codepad.css?v=3">
+<link rel="stylesheet" href="../shared/codepad.css?v=5">
 <style>
   .gym { font-size: 30px; }
   .gym li { margin-bottom: 10px; }
@@ -31,7 +31,7 @@
   <aside class="notes">
     <p><b>Before class:</b> this deck open in <b>Chrome</b>, internet on. Your terminal: Docker running, <code>node:18-alpine</code> and <code>python:3.11-slim</code> pulled.</p>
     <p>Press <b>T</b>. Students open VS Code; new folder <code>functional</code> (<code>mkdir functional</code>, <code>cd functional</code>, <code>code .</code>), Docker Desktop running.</p>
-    <p><b>Docker, like Lecture 1:</b> students copy <code>Dockerfile.node</code> and <code>Dockerfile.python</code> into <code>functional/</code> (Code Lab 2 has them). Every run: <code>docker build -t js-functional -f Dockerfile.node .</code> then <code>docker run --rm --init js-functional node compare.js</code> (Python: <code>py-functional</code>, <code>python3</code>). Rebuild after every edit.</p>
+    <p><b>Docker, like Lecture 1:</b> inside <code>functional/</code>, students make <code>js/</code> and <code>python/</code>, each with its <code>Dockerfile</code> (Code Lab 2 has them). One terminal <code>cd js</code>, the other <code>cd python</code>. Every run: <code>docker build -t js-functional .</code> then <code>docker run --rm --init js-functional node compare.js</code> (Python: <code>py-functional</code>, <code>python3</code>). Rebuild after every edit.</p>
     <p><b>The code slides are a real editor (Monaco, the editor inside VS Code).</b> Click in and <b>type live</b>: autocomplete and hovers work. <b>Ctrl+S</b> saves (● on the tab = unsaved; the terminal runs the <b>saved</b> file, like real VS Code). Click the terminal and type <code>node file.js</code> / <code>python3 file.py</code>. <b>Ctrl+C</b> stops a program, ↑ repeats a command. <b>Esc</b> leaves the editor. <b>Backup:</b> <b>N</b> types the next prepared chunk, <b>R</b> types and runs the commands for you.</p>
   </aside>
 </section>
@@ -53,34 +53,34 @@
 <!-- ============ COMPARE + CONDITIONALS (3–13) ============ -->
 <section class="slide pad" data-seg="Code along: compare" data-at="3">
   <h2>Comparisons give true or false <span class="say">compare.js · compare.py</span></h2>
-  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
-<script type="text/plain" data-file="Dockerfile.node" data-hidden data-start>FROM node:18-alpine
+  <div class="vscode" data-folder="functional" data-docker="js:js-functional|python:py-functional">
+<script type="text/plain" data-file="js/Dockerfile" data-hidden data-start>FROM node:18-alpine
 WORKDIR /app
 COPY . .
 CMD ["node", "compare.js"]</script>
-<script type="text/plain" data-file="Dockerfile.python" data-hidden data-start>FROM python:3.11-slim
+<script type="text/plain" data-file="python/Dockerfile" data-hidden data-start>FROM python:3.11-slim
 WORKDIR /app
 COPY . .
 CMD ["python3", "compare.py"]</script>
-<script type="text/plain" data-file="compare.js" data-step>let age = 18;
+<script type="text/plain" data-file="js/compare.js" data-step>let age = 18;
 console.log(age >= 18);
 console.log(age < 18);
 console.log(age === 18, age !== 21);</script>
-<script type="text/plain" data-file="compare.py" data-step>age = 18
+<script type="text/plain" data-file="python/compare.py" data-step>age = 18
 print(age >= 18)
 print(age < 18)
 print(age == 18, age != 21)</script>
-<script type="text/plain" data-file="compare.js" data-step>// === also checks the type. Use it.
+<script type="text/plain" data-file="js/compare.js" data-step>// === also checks the type. Use it.
 console.log(5 == "5");
 console.log(5 === "5");</script>
-<script type="text/plain" data-file="compare.py" data-step># Python's == never mixes types
+<script type="text/plain" data-file="python/compare.py" data-step># Python's == never mixes types
 print(5 == "5")</script>
-<script type="text/plain" data-file="compare.js" data-expect>true
+<script type="text/plain" data-file="js/compare.js" data-expect>true
 false
 true true
 true
 false</script>
-<script type="text/plain" data-file="compare.py" data-expect>True
+<script type="text/plain" data-file="python/compare.py" data-expect>True
 False
 True True
 False</script>
@@ -88,26 +88,28 @@ False</script>
   <aside class="notes">
     <p><b>** CODE ALONG, about 3 minutes. **</b> Students: <code>compare.js</code>, <code>compare.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>compare.js</b> · part 1</p>
+    <p class="tf"><b>js/compare.js</b> · part 1</p>
     <pre>let age = 18;
 console.log(age &gt;= 18);
 console.log(age &lt; 18);
 console.log(age === 18, age !== 21);</pre>
-    <p class="tf"><b>compare.py</b> · part 1</p>
+    <p class="tf"><b>python/compare.py</b> · part 1</p>
     <pre>age = 18
 print(age &gt;= 18)
 print(age &lt; 18)
 print(age == 18, age != 21)</pre>
-    <p class="tf"><b>compare.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/compare.js</b> · part 2 (add below, after a blank line)</p>
     <pre>// === also checks the type. Use it.
 console.log(5 == &quot;5&quot;);
 console.log(5 === &quot;5&quot;);</pre>
-    <p class="tf"><b>compare.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/compare.py</b> · part 2 (add below, after a blank line)</p>
     <pre># Python&#x27;s == never mixes types
 print(5 == &quot;5&quot;)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/functional/js
+docker build -t js-functional .
 docker run --rm --init js-functional node compare.js
-docker build -t py-functional -f Dockerfile.python .
+# right terminal: ~/functional/python
+docker build -t py-functional .
 docker run --rm --init py-functional python3 compare.py</pre>
     </div>
     <ul>
@@ -120,8 +122,8 @@ docker run --rm --init py-functional python3 compare.py</pre>
 
 <section class="slide pad" data-seg="Code along: conditionals" data-at="6">
   <h2>if / else if / else <span class="say">conditionals.js · conditionals.py</span></h2>
-  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional" data-term-lines="4">
-<script type="text/plain" data-file="conditionals.js" data-step>let score = 85;
+  <div class="vscode" data-folder="functional" data-docker="js:js-functional|python:py-functional" data-term-lines="4">
+<script type="text/plain" data-file="js/conditionals.js" data-step>let score = 85;
 
 if (score >= 90) {
   console.log("Pass with Honors");
@@ -130,7 +132,7 @@ if (score >= 90) {
 } else {
   console.log("Fail");
 }</script>
-<script type="text/plain" data-file="conditionals.py" data-step>score = 85
+<script type="text/plain" data-file="python/conditionals.py" data-step>score = 85
 
 if score >= 90:
     print("Pass with Honors")
@@ -138,7 +140,7 @@ elif score >= 70:
     print("Pass")
 else:
     print("Fail")</script>
-<script type="text/plain" data-file="conditionals.js" data-step>// AND: both must be true
+<script type="text/plain" data-file="js/conditionals.js" data-step>// AND: both must be true
 let age = 21;
 let hasId = true;
 
@@ -149,7 +151,7 @@ if (age >= 21 && hasId) {
 } else {
   console.log("This person is a minor");
 }</script>
-<script type="text/plain" data-file="conditionals.py" data-step># OR: one of the two is enough
+<script type="text/plain" data-file="python/conditionals.py" data-step># OR: one of the two is enough
 hungry = False
 bored = True
 
@@ -157,15 +159,15 @@ if hungry or bored:
     print("cook a meal")
 else:
     print("You don't need to eat")</script>
-<script type="text/plain" data-file="conditionals.js" data-expect>Pass
+<script type="text/plain" data-file="js/conditionals.js" data-expect>Pass
 This adult can drink</script>
-<script type="text/plain" data-file="conditionals.py" data-expect>Pass
+<script type="text/plain" data-file="python/conditionals.py" data-expect>Pass
 cook a meal</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>conditionals.js</code>, <code>conditionals.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>conditionals.js</b> · part 1</p>
+    <p class="tf"><b>js/conditionals.js</b> · part 1</p>
     <pre>let score = 85;
 
 if (score &gt;= 90) {
@@ -175,7 +177,7 @@ if (score &gt;= 90) {
 } else {
   console.log(&quot;Fail&quot;);
 }</pre>
-    <p class="tf"><b>conditionals.py</b> · part 1</p>
+    <p class="tf"><b>python/conditionals.py</b> · part 1</p>
     <pre>score = 85
 
 if score &gt;= 90:
@@ -184,7 +186,7 @@ elif score &gt;= 70:
     print(&quot;Pass&quot;)
 else:
     print(&quot;Fail&quot;)</pre>
-    <p class="tf"><b>conditionals.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/conditionals.js</b> · part 2 (add below, after a blank line)</p>
     <pre>// AND: both must be true
 let age = 21;
 let hasId = true;
@@ -196,7 +198,7 @@ if (age &gt;= 21 &amp;&amp; hasId) {
 } else {
   console.log(&quot;This person is a minor&quot;);
 }</pre>
-    <p class="tf"><b>conditionals.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/conditionals.py</b> · part 2 (add below, after a blank line)</p>
     <pre># OR: one of the two is enough
 hungry = False
 bored = True
@@ -205,9 +207,11 @@ if hungry or bored:
     print(&quot;cook a meal&quot;)
 else:
     print(&quot;You don&#x27;t need to eat&quot;)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/functional/js
+docker build -t js-functional .
 docker run --rm --init js-functional node conditionals.js
-docker build -t py-functional -f Dockerfile.python .
+# right terminal: ~/functional/python
+docker build -t py-functional .
 docker run --rm --init py-functional python3 conditionals.py</pre>
     </div>
     <ul>
@@ -231,33 +235,33 @@ docker run --rm --init py-functional python3 conditionals.py</pre>
 <!-- ============ LOOPS (13–23) ============ -->
 <section class="slide pad" data-seg="Code along: loops" data-at="13">
   <h2>Loop a list: by value, by index, or both <span class="say">loops.js · loops.py</span></h2>
-  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
-<script type="text/plain" data-file="loops.js" data-step>let colors = ["red", "green", "blue"];
+  <div class="vscode" data-folder="functional" data-docker="js:js-functional|python:py-functional">
+<script type="text/plain" data-file="js/loops.js" data-step>let colors = ["red", "green", "blue"];
 
 // by value: for...of
 for (let color of colors) {
   console.log(color);
 }</script>
-<script type="text/plain" data-file="loops.py" data-step>colors = ["red", "green", "blue"]
+<script type="text/plain" data-file="python/loops.py" data-step>colors = ["red", "green", "blue"]
 
 # by value: for...in
 for color in colors:
     print(color)</script>
-<script type="text/plain" data-file="loops.js" data-step>// by index
+<script type="text/plain" data-file="js/loops.js" data-step>// by index
 for (let i = 0; i < colors.length; i++) {
   console.log(i, colors[i]);
 }</script>
-<script type="text/plain" data-file="loops.py" data-step># by index
+<script type="text/plain" data-file="python/loops.py" data-step># by index
 for idx in range(len(colors)):
     print(idx, colors[idx])</script>
-<script type="text/plain" data-file="loops.js" data-step>// both
+<script type="text/plain" data-file="js/loops.js" data-step>// both
 for (const [idx, color] of colors.entries()) {
   console.log(idx, color);
 }</script>
-<script type="text/plain" data-file="loops.py" data-step># both
+<script type="text/plain" data-file="python/loops.py" data-step># both
 for idx, color in enumerate(colors):
     print(idx, color)</script>
-<script type="text/plain" data-file="loops.js" data-expect>red
+<script type="text/plain" data-file="js/loops.js" data-expect>red
 green
 blue
 0 red
@@ -266,7 +270,7 @@ blue
 0 red
 1 green
 2 blue</script>
-<script type="text/plain" data-file="loops.py" data-expect>red
+<script type="text/plain" data-file="python/loops.py" data-expect>red
 green
 blue
 0 red
@@ -279,40 +283,42 @@ blue
   <aside class="notes">
     <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>loops.js</code>, <code>loops.py</code>. Run after each pair.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>loops.js</b> · part 1</p>
+    <p class="tf"><b>js/loops.js</b> · part 1</p>
     <pre>let colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
 
 // by value: for...of
 for (let color of colors) {
   console.log(color);
 }</pre>
-    <p class="tf"><b>loops.py</b> · part 1</p>
+    <p class="tf"><b>python/loops.py</b> · part 1</p>
     <pre>colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;]
 
 # by value: for...in
 for color in colors:
     print(color)</pre>
-    <p class="tf"><b>loops.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/loops.js</b> · part 2 (add below, after a blank line)</p>
     <pre>// by index
 for (let i = 0; i &lt; colors.length; i++) {
   console.log(i, colors[i]);
 }</pre>
-    <p class="tf"><b>loops.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/loops.py</b> · part 2 (add below, after a blank line)</p>
     <pre># by index
 for idx in range(len(colors)):
     print(idx, colors[idx])</pre>
-    <p class="tf"><b>loops.js</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>js/loops.js</b> · part 3 (add below, after a blank line)</p>
     <pre>// both
 for (const [idx, color] of colors.entries()) {
   console.log(idx, color);
 }</pre>
-    <p class="tf"><b>loops.py</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>python/loops.py</b> · part 3 (add below, after a blank line)</p>
     <pre># both
 for idx, color in enumerate(colors):
     print(idx, color)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/functional/js
+docker build -t js-functional .
 docker run --rm --init js-functional node loops.js
-docker build -t py-functional -f Dockerfile.python .
+# right terminal: ~/functional/python
+docker build -t py-functional .
 docker run --rm --init py-functional python3 loops.py</pre>
     </div>
     <ul>
@@ -326,8 +332,8 @@ docker run --rm --init py-functional python3 loops.py</pre>
 
 <section class="slide pad" data-seg="Code along: more loops" data-at="18">
   <h2>Loop an object or dict, then while <span class="say">more-loops.js · more-loops.py</span></h2>
-  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
-<script type="text/plain" data-file="more-loops.js" data-step>let user = { name: "Alex", age: 30 };
+  <div class="vscode" data-folder="functional" data-docker="js:js-functional|python:py-functional">
+<script type="text/plain" data-file="js/more-loops.js" data-step>let user = { name: "Alex", age: 30 };
 
 for (let key in user) {
   console.log(key);
@@ -335,29 +341,29 @@ for (let key in user) {
 for (let [key, value] of Object.entries(user)) {
   console.log(key, value);
 }</script>
-<script type="text/plain" data-file="more-loops.py" data-step>user = {"name": "Alex", "age": 30}
+<script type="text/plain" data-file="python/more-loops.py" data-step>user = {"name": "Alex", "age": 30}
 
 for key in user:
     print(key)
 for key, value in user.items():
     print(key, value)</script>
-<script type="text/plain" data-file="more-loops.js" data-step>let count = 0;
+<script type="text/plain" data-file="js/more-loops.js" data-step>let count = 0;
 while (count < 3) {
   console.log(count);
   count++;
 }</script>
-<script type="text/plain" data-file="more-loops.py" data-step>count = 0
+<script type="text/plain" data-file="python/more-loops.py" data-step>count = 0
 while count < 3:
     print(count)
     count += 1</script>
-<script type="text/plain" data-file="more-loops.js" data-expect>name
+<script type="text/plain" data-file="js/more-loops.js" data-expect>name
 age
 name Alex
 age 30
 0
 1
 2</script>
-<script type="text/plain" data-file="more-loops.py" data-expect>name
+<script type="text/plain" data-file="python/more-loops.py" data-expect>name
 age
 name Alex
 age 30
@@ -368,7 +374,7 @@ age 30
   <aside class="notes">
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>more-loops.js</code>, <code>more-loops.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>more-loops.js</b> · part 1</p>
+    <p class="tf"><b>js/more-loops.js</b> · part 1</p>
     <pre>let user = { name: &quot;Alex&quot;, age: 30 };
 
 for (let key in user) {
@@ -377,27 +383,29 @@ for (let key in user) {
 for (let [key, value] of Object.entries(user)) {
   console.log(key, value);
 }</pre>
-    <p class="tf"><b>more-loops.py</b> · part 1</p>
+    <p class="tf"><b>python/more-loops.py</b> · part 1</p>
     <pre>user = {&quot;name&quot;: &quot;Alex&quot;, &quot;age&quot;: 30}
 
 for key in user:
     print(key)
 for key, value in user.items():
     print(key, value)</pre>
-    <p class="tf"><b>more-loops.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/more-loops.js</b> · part 2 (add below, after a blank line)</p>
     <pre>let count = 0;
 while (count &lt; 3) {
   console.log(count);
   count++;
 }</pre>
-    <p class="tf"><b>more-loops.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/more-loops.py</b> · part 2 (add below, after a blank line)</p>
     <pre>count = 0
 while count &lt; 3:
     print(count)
     count += 1</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/functional/js
+docker build -t js-functional .
 docker run --rm --init js-functional node more-loops.js
-docker build -t py-functional -f Dockerfile.python .
+# right terminal: ~/functional/python
+docker build -t py-functional .
 docker run --rm --init py-functional python3 more-loops.py</pre>
     </div>
     <ul>
@@ -446,19 +454,19 @@ docker run --rm --init py-functional python3 more-loops.py</pre>
 <!-- ============ FUNCTIONS (29–35) ============ -->
 <section class="slide pad" data-seg="Code along: functions" data-at="29">
   <h2>Write it once, call it often <span class="say">functions.js · functions.py</span></h2>
-  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
-<script type="text/plain" data-file="functions.js" data-step>function sayHi() {
+  <div class="vscode" data-folder="functional" data-docker="js:js-functional|python:py-functional">
+<script type="text/plain" data-file="js/functions.js" data-step>function sayHi() {
   console.log("Good Afternoon");
 }
 
 sayHi();
 sayHi();</script>
-<script type="text/plain" data-file="functions.py" data-step>def say_hi():
+<script type="text/plain" data-file="python/functions.py" data-step>def say_hi():
     print("Good Afternoon")
 
 say_hi()
 say_hi()</script>
-<script type="text/plain" data-file="functions.js" data-step>// name is a parameter; "Alice" is the argument
+<script type="text/plain" data-file="js/functions.js" data-step>// name is a parameter; "Alice" is the argument
 function greet(name) {
   console.log("Good Afternoon " + name);
 }
@@ -466,14 +474,14 @@ function greet(name) {
 greet("Alice");
 let result = greet("Sam");
 console.log(result);</script>
-<script type="text/plain" data-file="functions.py" data-step># name is a parameter; "Alice" is the argument
+<script type="text/plain" data-file="python/functions.py" data-step># name is a parameter; "Alice" is the argument
 def greet(name):
     print("Good Afternoon " + name)
 
 greet("Alice")
 result = greet("Sam")
 print(result)</script>
-<script type="text/plain" data-file="functions.js" data-step data-mode="set">function sayHi() {
+<script type="text/plain" data-file="js/functions.js" data-step data-mode="set">function sayHi() {
   console.log("Good Afternoon");
 }
 
@@ -488,7 +496,7 @@ function greet(name) {
 greet("Alice");
 let result = greet("Sam");
 console.log(result);</script>
-<script type="text/plain" data-file="functions.py" data-step data-mode="set">def say_hi():
+<script type="text/plain" data-file="python/functions.py" data-step data-mode="set">def say_hi():
     print("Good Afternoon")
 
 say_hi()
@@ -501,30 +509,30 @@ def greet(name):
 greet("Alice")
 result = greet("Sam")
 print(result)</script>
-<script type="text/plain" data-file="functions.js" data-expect>Good Afternoon
+<script type="text/plain" data-file="js/functions.js" data-expect>Good Afternoon
 Good Afternoon
 Good Afternoon Sam</script>
-<script type="text/plain" data-file="functions.py" data-expect>Good Afternoon
+<script type="text/plain" data-file="python/functions.py" data-expect>Good Afternoon
 Good Afternoon
 Good Afternoon Sam</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>functions.js</code>, <code>functions.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>functions.js</b> · part 1</p>
+    <p class="tf"><b>js/functions.js</b> · part 1</p>
     <pre>function sayHi() {
   console.log(&quot;Good Afternoon&quot;);
 }
 
 sayHi();
 sayHi();</pre>
-    <p class="tf"><b>functions.py</b> · part 1</p>
+    <p class="tf"><b>python/functions.py</b> · part 1</p>
     <pre>def say_hi():
     print(&quot;Good Afternoon&quot;)
 
 say_hi()
 say_hi()</pre>
-    <p class="tf"><b>functions.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/functions.js</b> · part 2 (add below, after a blank line)</p>
     <pre>// name is a parameter; &quot;Alice&quot; is the argument
 function greet(name) {
   console.log(&quot;Good Afternoon &quot; + name);
@@ -533,7 +541,7 @@ function greet(name) {
 greet(&quot;Alice&quot;);
 let result = greet(&quot;Sam&quot;);
 console.log(result);</pre>
-    <p class="tf"><b>functions.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/functions.py</b> · part 2 (add below, after a blank line)</p>
     <pre># name is a parameter; &quot;Alice&quot; is the argument
 def greet(name):
     print(&quot;Good Afternoon &quot; + name)
@@ -541,13 +549,15 @@ def greet(name):
 greet(&quot;Alice&quot;)
 result = greet(&quot;Sam&quot;)
 print(result)</pre>
-    <p class="tf">Save, rebuild and run it first. Then in <b>functions.js</b> change line 10 to:</p>
+    <p class="tf">Save, rebuild and run it first. Then in <b>js/functions.js</b> change line 10 to:</p>
     <pre>  return &quot;Good Afternoon &quot; + name;</pre>
-    <p class="tf">Save, rebuild and run it first. Then in <b>functions.py</b> change line 9 to:</p>
+    <p class="tf">Save, rebuild and run it first. Then in <b>python/functions.py</b> change line 9 to:</p>
     <pre>    return &quot;Good Afternoon &quot; + name</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/functional/js
+docker build -t js-functional .
 docker run --rm --init js-functional node functions.js
-docker build -t py-functional -f Dockerfile.python .
+# right terminal: ~/functional/python
+docker build -t py-functional .
 docker run --rm --init py-functional python3 functions.py</pre>
     </div>
     <ul>
@@ -571,58 +581,60 @@ docker run --rm --init py-functional python3 functions.py</pre>
 <!-- ============ FUNCTIONAL TOOLS (34–40) ============ -->
 <section class="slide pad" data-seg="Code along: functional tools" data-at="34">
   <h2>Arrow, lambda, filter, sort, map <span class="say">functional.js · functional.py</span></h2>
-  <div class="vscode" data-folder="functional" data-docker="Dockerfile.node:js-functional|Dockerfile.python:py-functional">
-<script type="text/plain" data-file="functional.js" data-step>const multiply = (a, b) => a * b;
+  <div class="vscode" data-folder="functional" data-docker="js:js-functional|python:py-functional">
+<script type="text/plain" data-file="js/functional.js" data-step>const multiply = (a, b) => a * b;
 console.log(multiply(3, 4));</script>
-<script type="text/plain" data-file="functional.py" data-step>multiply = lambda a, b: a * b
+<script type="text/plain" data-file="python/functional.py" data-step>multiply = lambda a, b: a * b
 print(multiply(3, 4))</script>
-<script type="text/plain" data-file="functional.js" data-step>let nums = [3, 1, 4, 2];
+<script type="text/plain" data-file="js/functional.js" data-step>let nums = [3, 1, 4, 2];
 let evens = nums.filter(n => n % 2 === 0);
 let doubled = nums.map(n => n * 2);
 console.log(evens, doubled, nums);</script>
-<script type="text/plain" data-file="functional.py" data-step>nums = [3, 1, 4, 2]
+<script type="text/plain" data-file="python/functional.py" data-step>nums = [3, 1, 4, 2]
 evens = list(filter(lambda n: n % 2 == 0, nums))
 doubled = [n * 2 for n in nums]
 print(evens, doubled, nums)</script>
-<script type="text/plain" data-file="functional.js" data-step>nums.sort((a, b) => a - b);
+<script type="text/plain" data-file="js/functional.js" data-step>nums.sort((a, b) => a - b);
 console.log(nums);</script>
-<script type="text/plain" data-file="functional.py" data-step>sorted_nums = sorted(nums)
+<script type="text/plain" data-file="python/functional.py" data-step>sorted_nums = sorted(nums)
 print(sorted_nums, nums)</script>
-<script type="text/plain" data-file="functional.js" data-expect>12
+<script type="text/plain" data-file="js/functional.js" data-expect>12
 [ 4, 2 ] [ 6, 2, 8, 4 ] [ 3, 1, 4, 2 ]
 [ 1, 2, 3, 4 ]</script>
-<script type="text/plain" data-file="functional.py" data-expect>12
+<script type="text/plain" data-file="python/functional.py" data-expect>12
 [4, 2] [6, 2, 8, 4] [3, 1, 4, 2]
 [1, 2, 3, 4] [3, 1, 4, 2]</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>functional.js</code>, <code>functional.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>functional.js</b> · part 1</p>
+    <p class="tf"><b>js/functional.js</b> · part 1</p>
     <pre>const multiply = (a, b) =&gt; a * b;
 console.log(multiply(3, 4));</pre>
-    <p class="tf"><b>functional.py</b> · part 1</p>
+    <p class="tf"><b>python/functional.py</b> · part 1</p>
     <pre>multiply = lambda a, b: a * b
 print(multiply(3, 4))</pre>
-    <p class="tf"><b>functional.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/functional.js</b> · part 2 (add below, after a blank line)</p>
     <pre>let nums = [3, 1, 4, 2];
 let evens = nums.filter(n =&gt; n % 2 === 0);
 let doubled = nums.map(n =&gt; n * 2);
 console.log(evens, doubled, nums);</pre>
-    <p class="tf"><b>functional.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/functional.py</b> · part 2 (add below, after a blank line)</p>
     <pre>nums = [3, 1, 4, 2]
 evens = list(filter(lambda n: n % 2 == 0, nums))
 doubled = [n * 2 for n in nums]
 print(evens, doubled, nums)</pre>
-    <p class="tf"><b>functional.js</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>js/functional.js</b> · part 3 (add below, after a blank line)</p>
     <pre>nums.sort((a, b) =&gt; a - b);
 console.log(nums);</pre>
-    <p class="tf"><b>functional.py</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>python/functional.py</b> · part 3 (add below, after a blank line)</p>
     <pre>sorted_nums = sorted(nums)
 print(sorted_nums, nums)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-functional -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/functional/js
+docker build -t js-functional .
 docker run --rm --init js-functional node functional.js
-docker build -t py-functional -f Dockerfile.python .
+# right terminal: ~/functional/python
+docker build -t py-functional .
 docker run --rm --init py-functional python3 functional.py</pre>
     </div>
     <ul>
@@ -677,6 +689,6 @@ docker run --rm --init py-functional python3 functional.py</pre>
 
 </div>
 <script src="../shared/deck.js"></script>
-<script src="../shared/codepad.js?v=3"></script>
+<script src="../shared/codepad.js?v=5"></script>
 </body>
 </html>

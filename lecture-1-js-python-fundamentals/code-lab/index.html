@@ -79,9 +79,10 @@
   <section>
     <h2>Before you start</h2>
     <ol class="steps">
-      <li>Make a folder and open it in VS Code:
+      <li>Make the folders and open them in VS Code: <code>js/</code> for every JavaScript file, <code>python/</code> for every Python file.
         <div class="cmdwrap"><pre class="cmd"><code>mkdir fundamentals
 cd fundamentals
+mkdir js python
 code .</code></pre><button type="button" class="copy">Copy</button></div>
         <code>code: command not found</code>? Open VS Code, then <b>File → Open Folder</b> and pick <code>fundamentals</code>.</li>
       <li>Docker is running (Mac/Windows: open Docker Desktop first). In VS Code's terminal (<b>Ctrl+`</b>):
@@ -95,71 +96,81 @@ docker pull python:3.11-slim</code></pre><button type="button" class="copy">Copy
 
   <section id="docker">
     <h2>The two Dockerfiles</h2>
-    <p>The lesson's Dockerfiles, with one change: <code>COPY . .</code> copies every file in the folder, so one image can run any of today's files. Two Dockerfiles in one folder need two names; <code>-f</code> picks one.</p>
-    <p class="label">Dockerfile.node</p>
+    <p>The lesson's Dockerfiles, with one change: <code>COPY . .</code> copies every file in the folder, so one image can run any of today's files. Each one lives in its own folder and is named just <code>Dockerfile</code>, so <code>docker build</code> finds it by itself.</p>
+<pre class="see">fundamentals/
+├── js/
+│   ├── Dockerfile
+│   └── example.js   (and every .js file today)
+└── python/
+    ├── Dockerfile
+    └── example.py   (and every .py file today)</pre>
+    <p class="label">js/Dockerfile</p>
     <div class="cmdwrap"><pre class="cmd"><code>FROM node:18-alpine
 WORKDIR /app
 COPY . .
 CMD ["node", "example.js"]</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">Dockerfile.python</p>
+    <p class="label">python/Dockerfile</p>
     <div class="cmdwrap"><pre class="cmd"><code>FROM python:3.11-slim
 WORKDIR /app
 COPY . .
 CMD ["python3", "example.py"]</code></pre><button type="button" class="copy">Copy</button></div>
+    <p><b>Two terminals</b> (VS Code: the <b>+</b> or split button in the terminal panel): one for each folder. They stay there all lecture.</p>
+    <div class="cmdwrap"><pre class="cmd"><code>cd js</code></pre><button type="button" class="copy">Copy</button></div>
+    <div class="cmdwrap"><pre class="cmd"><code>cd python</code></pre><button type="button" class="copy">Copy</button></div>
     <p><b>Every time you run a file:</b> build, then run. The words after the image name replace the CMD, so the same image runs any file. <b>--init</b> lets Ctrl+C stop a program (without it, Ctrl+C can't stop Node inside a container).</p>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals -f Dockerfile.node .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node example.js</code></pre><button type="button" class="copy">Copy</button></div>
     <p class="note"><b>Edited a file? Build again.</b> COPY is a snapshot taken at build time: without a rebuild the image still has your old code (Monday's lesson). Mac/Linux: <code>docker build … &amp;&amp; docker run …</code> does both in one line, and ↑ repeats it. Or try a snippet in the <a href="../../playground/" target="_blank" rel="noopener">Playground</a>.</p>
   </section>
 
   <section id="s1">
     <h2><span class="n">1 ·</span> Your first two files</h2>
-    <p>New files: <code>example.js</code> and <code>example.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
-    <p class="label">example.js · part 1</p>
+    <p>New files: <code>js/example.js</code> and <code>python/example.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run: the <code>.js</code> file in your <code>js/</code> terminal, the <code>.py</code> file in your <code>python/</code> terminal.</p>
+    <p class="label">js/example.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>console.log(&quot;Hello from JavaScript&quot;);</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals -f Dockerfile.node .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node example.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Hello from JavaScript</pre>
-    <p class="label">example.py · part 1</p>
+    <p class="label">python/example.py · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>print(&quot;Hello from Python&quot;)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals -f Dockerfile.python .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 example.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Hello from Python</pre>
   </section>
 
   <section id="s2">
     <h2><span class="n">2 ·</span> Variables and naming</h2>
-    <p>New files: <code>variables.js</code> and <code>variables.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
-    <p class="label">variables.js · part 1</p>
+    <p>New files: <code>js/variables.js</code> and <code>python/variables.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run: the <code>.js</code> file in your <code>js/</code> terminal, the <code>.py</code> file in your <code>python/</code> terminal.</p>
+    <p class="label">js/variables.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>let userName = &quot;Alex&quot;;
 console.log(userName);</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">variables.js · part 2 (add below)</p>
+    <p class="label">js/variables.js · part 2 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>// change what&#x27;s in the box (no let the second time)
 userName = &quot;Sam&quot;;
 console.log(userName);</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">variables.js · part 3 (add below)</p>
+    <p class="label">js/variables.js · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>// camelCase for variables, UPPER_CASE for constants
 let favoriteColor = &quot;blue&quot;;
 let MAX_USERS = 30;
 console.log(favoriteColor, MAX_USERS);</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals -f Dockerfile.node .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node variables.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Alex
 Sam
 blue 30</pre>
-    <p class="label">variables.py · part 1</p>
+    <p class="label">python/variables.py · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>user_name = &quot;Alex&quot;
 print(user_name)</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">variables.py · part 2 (add below)</p>
+    <p class="label">python/variables.py · part 2 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code># change what&#x27;s in the box
 user_name = &quot;Sam&quot;
 print(user_name)</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">variables.py · part 3 (add below)</p>
+    <p class="label">python/variables.py · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code># snake_case for variables, UPPER_CASE for constants
 favorite_color = &quot;blue&quot;
 MAX_USERS = 30
 print(favorite_color, MAX_USERS)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals -f Dockerfile.python .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 variables.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Alex
 Sam
@@ -168,23 +179,23 @@ blue 30</pre>
 
   <section id="s3">
     <h2><span class="n">3 ·</span> Primitive types: one value each</h2>
-    <p>New files: <code>primitives.js</code> and <code>primitives.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
-    <p class="label">primitives.js · part 1</p>
+    <p>New files: <code>js/primitives.js</code> and <code>python/primitives.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run: the <code>.js</code> file in your <code>js/</code> terminal, the <code>.py</code> file in your <code>python/</code> terminal.</p>
+    <p class="label">js/primitives.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>let message = &quot;Hello, world!&quot;;
 console.log(message);
 let count = 10;
 console.log(count);</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">primitives.js · part 2 (add below)</p>
+    <p class="label">js/primitives.js · part 2 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>let isActive = true;
 console.log(isActive);
 let data = null;
 console.log(data);</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">primitives.js · part 3 (add below)</p>
+    <p class="label">js/primitives.js · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>let price = 9.99;
 console.log(typeof price, typeof count);
 let value;
 console.log(value);</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals -f Dockerfile.node .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node primitives.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Hello, world!
 10
@@ -192,20 +203,20 @@ true
 null
 number number
 undefined</pre>
-    <p class="label">primitives.py · part 1</p>
+    <p class="label">python/primitives.py · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>message = &quot;Hello, world!&quot;
 print(message)
 count = 10
 print(count)</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">primitives.py · part 2 (add below)</p>
+    <p class="label">python/primitives.py · part 2 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>is_active = True
 print(is_active)
 data = None
 print(data)</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">primitives.py · part 3 (add below)</p>
+    <p class="label">python/primitives.py · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>price = 9.99
 print(type(price), type(count))</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals -f Dockerfile.python .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 primitives.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">Hello, world!
 10
@@ -216,43 +227,43 @@ None
 
   <section id="s4">
     <h2><span class="n">4 ·</span> Lists, objects and dicts</h2>
-    <p>New files: <code>collections.js</code> and <code>collections.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
-    <p class="label">collections.js · part 1</p>
+    <p>New files: <code>js/collections.js</code> and <code>python/collections.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run: the <code>.js</code> file in your <code>js/</code> terminal, the <code>.py</code> file in your <code>python/</code> terminal.</p>
+    <p class="label">js/collections.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>// idxs         0       1       2
 let colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
 console.log(colors);
 console.log(colors[1]);</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">collections.js · part 2 (add below)</p>
+    <p class="label">js/collections.js · part 2 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>let user = { name: &quot;Alex&quot;, age: 30 };
 console.log(user);
 console.log(user.name);</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">collections.js · part 3 (add below)</p>
+    <p class="label">js/collections.js · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>// bracket notation: add, then remove
 user[&quot;city&quot;] = &quot;Chicago&quot;;
 delete user.age;
 console.log(user);</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals -f Dockerfile.node .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node collections.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">[ &#x27;red&#x27;, &#x27;green&#x27;, &#x27;blue&#x27; ]
 green
 { name: &#x27;Alex&#x27;, age: 30 }
 Alex
 { name: &#x27;Alex&#x27;, city: &#x27;Chicago&#x27; }</pre>
-    <p class="label">collections.py · part 1</p>
+    <p class="label">python/collections.py · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code># idxs      0       1        2
 colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;]
 print(colors)
 print(colors[1])</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">collections.py · part 2 (add below)</p>
+    <p class="label">python/collections.py · part 2 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>user = {&quot;name&quot;: &quot;Alex&quot;, &quot;age&quot;: 30}
 print(user)
 print(user.get(&quot;name&quot;))</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">collections.py · part 3 (add below)</p>
+    <p class="label">python/collections.py · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code># bracket notation: add, then remove
 user[&quot;city&quot;] = &quot;Chicago&quot;
 del user[&quot;age&quot;]
 print(user)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals -f Dockerfile.python .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 collections.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">[&#x27;red&#x27;, &#x27;green&#x27;, &#x27;blue&#x27;]
 green
@@ -263,43 +274,43 @@ Alex
 
   <section id="s5">
     <h2><span class="n">5 ·</span> Can it change?</h2>
-    <p>New files: <code>mutable.js</code> and <code>mutable.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run.</p>
-    <p class="label">mutable.js · part 1</p>
+    <p>New files: <code>js/mutable.js</code> and <code>python/mutable.py</code>. Type each block yourself (copy only if you fall behind), save, then build and run: the <code>.js</code> file in your <code>js/</code> terminal, the <code>.py</code> file in your <code>python/</code> terminal.</p>
+    <p class="label">js/mutable.js · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code>// a list is mutable: it changes in place
 let colors = [&quot;red&quot;, &quot;green&quot;];
 colors.push(&quot;blue&quot;);
 console.log(colors);</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">mutable.js · part 2 (add below)</p>
+    <p class="label">js/mutable.js · part 2 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>// a string is immutable: you get a NEW string
 let name = &quot;alex&quot;;
 let loud = name.toUpperCase();
 console.log(name, loud);</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">mutable.js · part 3 (add below)</p>
+    <p class="label">js/mutable.js · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code>// the bug: two labels, one list
 let copy = colors;
 copy.push(&quot;pink&quot;);
 console.log(colors);</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals -f Dockerfile.node .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node mutable.js</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">[ &#x27;red&#x27;, &#x27;green&#x27;, &#x27;blue&#x27; ]
 alex ALEX
 [ &#x27;red&#x27;, &#x27;green&#x27;, &#x27;blue&#x27;, &#x27;pink&#x27; ]</pre>
-    <p class="label">mutable.py · part 1</p>
+    <p class="label">python/mutable.py · part 1</p>
     <div class="cmdwrap"><pre class="cmd"><code># a list is mutable: it changes in place
 colors = [&quot;red&quot;, &quot;green&quot;]
 colors.append(&quot;blue&quot;)
 print(colors)</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">mutable.py · part 2 (add below)</p>
+    <p class="label">python/mutable.py · part 2 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code># a string is immutable: you get a NEW string
 name = &quot;alex&quot;
 loud = name.upper()
 print(name, loud)</code></pre><button type="button" class="copy">Copy</button></div>
-    <p class="label">mutable.py · part 3 (add below)</p>
+    <p class="label">python/mutable.py · part 3 (add below)</p>
     <div class="cmdwrap"><pre class="cmd"><code># the bug: two labels, one list
 copy = colors
 copy.append(&quot;pink&quot;)
 print(colors)</code></pre><button type="button" class="copy">Copy</button></div>
-    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals -f Dockerfile.python .
+    <div class="cmdwrap"><pre class="cmd"><code>docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 mutable.py</code></pre><button type="button" class="copy">Copy</button></div>
 <pre class="see">[&#x27;red&#x27;, &#x27;green&#x27;, &#x27;blue&#x27;]
 alex ALEX
@@ -311,7 +322,7 @@ alex ALEX
   <section>
     <h2>Check: you're done when…</h2>
     <ol class="steps">
-      <li>Your <code>fundamentals</code> folder has the two Dockerfiles and 10 files: <code>example</code>, <code>variables</code>, <code>primitives</code>, <code>collections</code>, <code>mutable</code>, each <code>.js</code> and <code>.py</code></li>
+      <li>Your <code>fundamentals</code> folder has <code>js/</code> and <code>python/</code>, each with its <code>Dockerfile</code>, and 10 files in all: <code>example</code>, <code>variables</code>, <code>primitives</code>, <code>collections</code>, <code>mutable</code>, each <code>.js</code> and <code>.py</code></li>
       <li>Every file builds and runs with Docker in <b>your</b> terminal and prints what this page shows</li>
       <li>You can say why <code>colors</code> got <code>"pink"</code> in section 5</li>
     </ol>
@@ -324,8 +335,9 @@ alex ALEX
             <tr><td><code>Cannot connect to the Docker daemon</code></td><td>Docker Desktop isn't running</td><td>Open Docker Desktop and wait, then try again</td></tr>
       <tr><td>The old output, after you edited the file</td><td>You didn't rebuild: the image has the old copy</td><td><code>docker build …</code> again, then run</td></tr>
       <tr><td><code>Error: Cannot find module '/app/variables.js'</code> / <code>can't open file '/app/variables.py'</code></td><td>The file is new and the image is old (or the name is misspelled)</td><td>Save, rebuild, run</td></tr>
-      <tr><td><code>pull access denied for js-fundamentals</code></td><td>You ran before building (or the tag is misspelled)</td><td><code>docker build -t js-fundamentals -f Dockerfile.node .</code></td></tr>
-      <tr><td><code>failed to read dockerfile: open Dockerfile.node</code></td><td>Wrong file name, or not in the <code>fundamentals</code> folder</td><td><code>ls</code>, then <code>cd fundamentals</code></td></tr>
+      <tr><td><code>pull access denied for js-fundamentals</code></td><td>You ran before building (or the tag is misspelled)</td><td><code>docker build -t js-fundamentals .</code> (in <code>js/</code>)</td></tr>
+      <tr><td><code>failed to read dockerfile: open Dockerfile</code></td><td>The terminal isn't in <code>js/</code> or <code>python/</code>, or the file isn't named exactly <code>Dockerfile</code></td><td><code>pwd</code>, then <code>cd js</code> (or <code>cd python</code>)</td></tr>
+      <tr><td><code>Cannot find module '/app/…'</code> even after a rebuild</td><td>The file is in the wrong folder (a <code>.js</code> file in <code>python/</code>, or in <code>fundamentals/</code> itself)</td><td>Move it into <code>js/</code>, rebuild</td></tr>
       <tr><td><code>ReferenceError: True is not defined</code></td><td>Python's <code>True</code> in a JS file</td><td>JS is lowercase: <code>true</code>, <code>false</code>, <code>null</code></td></tr>
       <tr><td><code>NameError: name 'true' is not defined</code></td><td>JS's <code>true</code> in a Python file</td><td>Python is capitalized: <code>True</code>, <code>False</code>, <code>None</code></td></tr>
       <tr><td><code>SyntaxError: Identifier 'userName' has already been declared</code></td><td><code>let</code> twice for the same name</td><td>Only the first time gets <code>let</code></td></tr>
@@ -334,7 +346,6 @@ alex ALEX
       <tr><td>Nothing changed after you edited</td><td>The file isn't saved</td><td>A dot on the tab = unsaved. Ctrl+S, run again</td></tr>
     </table>
   </section>
-
 </main>
 <script>
   document.querySelectorAll('.copy').forEach((b) => b.onclick = async () => {

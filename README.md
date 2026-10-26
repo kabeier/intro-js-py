@@ -24,7 +24,7 @@ Lecture site for Code Platoon Phase I, **Fundamentals: JavaScript and Python**: 
 
 - `demo-kit/RUNBOOK.md`: codepad keys, per-slide Do/Say, time checks
 - `demo-kit/prompts.md`: every file with its output, plus the homework's Claude prompt
-- `demo-kit/fundamentals/` · `demo-kit/functional/`: the finished lecture folders
+- `demo-kit/fundamentals/` · `demo-kit/functional/`: the finished lecture folders (`js/` and `python/`, a `Dockerfile` in each)
 
 ## Diagrams
 

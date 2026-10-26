@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lecture 1 · JS & Python Fundamentals</title>
 <link rel="stylesheet" href="../shared/deck.css">
-<link rel="stylesheet" href="../shared/codepad.css?v=3">
+<link rel="stylesheet" href="../shared/codepad.css?v=5">
 <style>
   .twin { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
   .twin pre { font-size: 26px; }
@@ -86,12 +86,13 @@ print(user_name)</pre></div>
 
 <!-- ============ SET UP (7–13) ============ -->
 <section class="slide" data-seg="Your terminal: set up" data-at="7">
-  <h2>Set up: one folder, and Docker running</h2>
+  <h2>Set up: two folders, and Docker running</h2>
   <div class="cols cmdbox" style="gap:40px">
     <div>
-      <p class="small" style="margin-bottom:10px"><b>1 · Make the folder, open it in VS Code</b></p>
+      <p class="small" style="margin-bottom:10px"><b>1 · Make the folders, open them in VS Code</b></p>
       <pre>mkdir fundamentals
 cd fundamentals
+mkdir js python
 code .</pre>
       <p class="small muted" style="margin-top:12px"><code>code</code> not found? VS Code → File → Open Folder.</p>
     </div>
@@ -114,24 +115,29 @@ docker run --rm hello-world</pre>
 </section>
 
 <section class="slide" data-seg="Docker set up" data-at="9">
-  <h2>Two Dockerfiles: one runtime each</h2>
+  <h2>Two folders: one Dockerfile each</h2>
   <div class="cols" style="gap:40px">
-    <div><p class="small" style="margin-bottom:8px"><b>Dockerfile.node</b></p>
+    <div><p class="small" style="margin-bottom:8px"><b>fundamentals/js/Dockerfile</b></p>
       <pre style="font-size:22px">FROM node:18-alpine
 WORKDIR /app
 COPY . .
-CMD ["node", "example.js"]</pre></div>
-    <div><p class="small" style="margin-bottom:8px"><b>Dockerfile.python</b></p>
+CMD ["node", "example.js"]</pre>
+      <pre style="font-size:17px; margin-top:14px; padding:12px 20px">cd js
+docker build -t js-fundamentals .
+docker run --rm --init js-fundamentals node primitives.js</pre></div>
+    <div><p class="small" style="margin-bottom:8px"><b>fundamentals/python/Dockerfile</b></p>
       <pre style="font-size:22px">FROM python:3.11-slim
 WORKDIR /app
 COPY . .
-CMD ["python3", "example.py"]</pre></div>
+CMD ["python3", "example.py"]</pre>
+      <pre style="font-size:17px; margin-top:14px; padding:12px 20px">cd python
+docker build -t py-fundamentals .
+docker run --rm --init py-fundamentals python3 primitives.py</pre></div>
   </div>
-  <pre style="font-size:19px; margin-top:20px; padding:14px 22px">docker build -t js-fundamentals -f Dockerfile.node .     docker run --rm --init js-fundamentals node primitives.js
-docker build -t py-fundamentals -f Dockerfile.python .   docker run --rm --init py-fundamentals python3 primitives.py</pre>
   <p class="bottomline">Build after every edit: COPY is a snapshot. Switch languages by switching the base image.</p>
   <aside class="notes">
-    <p><b>** CODE ALONG, about 2 minutes. ** Students make both files</b> in <code>fundamentals/</code>. The lesson's Dockerfiles, with one change: <code>COPY . .</code> instead of <code>COPY example.js .</code>, so one image holds every file we write today. Two Dockerfiles in one folder need two names; <code>-f</code> picks one.</p>
+    <p><b>** CODE ALONG, about 2 minutes. ** Students make both files</b>: <code>js/Dockerfile</code> and <code>python/Dockerfile</code>. The lesson's Dockerfiles, with one change: <code>COPY . .</code> instead of <code>COPY example.js .</code>, so one image holds every file we write today.</p>
+    <p><b>The layout:</b> <code>fundamentals/js/</code> holds the Node <code>Dockerfile</code> and every <code>.js</code> file; <code>fundamentals/python/</code> holds the Python <code>Dockerfile</code> and every <code>.py</code> file. Each folder has a file named just <code>Dockerfile</code>, so <code>docker build</code> finds it with no <code>-f</code>. <b>Two terminals:</b> one <code>cd js</code>, one <code>cd python</code>, and they stay there.</p>
     <ul>
       <li><code>docker run … node primitives.js</code>: the words after the image name replace the CMD, so the same image runs any file.</li>
       <li><b>--init</b>: without it, Ctrl+C can't stop Node in a container (tested: Node is process #1 and ignores it). Lecture 2's infinite loop needs it.</li>
@@ -143,38 +149,40 @@ docker build -t py-fundamentals -f Dockerfile.python .   docker run --rm --init 
 
 <section class="slide pad" data-seg="Code along: first run" data-at="10">
   <h2>Your first two files <span class="say">create example.js and example.py, then run each</span></h2>
-  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
-<script type="text/plain" data-file="Dockerfile.node" data-hidden data-start>FROM node:18-alpine
+  <div class="vscode" data-folder="fundamentals" data-docker="js:js-fundamentals|python:py-fundamentals">
+<script type="text/plain" data-file="js/Dockerfile" data-hidden data-start>FROM node:18-alpine
 WORKDIR /app
 COPY . .
 CMD ["node", "example.js"]</script>
-<script type="text/plain" data-file="Dockerfile.python" data-hidden data-start>FROM python:3.11-slim
+<script type="text/plain" data-file="python/Dockerfile" data-hidden data-start>FROM python:3.11-slim
 WORKDIR /app
 COPY . .
 CMD ["python3", "example.py"]</script>
-<script type="text/plain" data-file="example.js" data-step>console.log("Hello from JavaScript");</script>
-<script type="text/plain" data-file="example.py" data-step>print("Hello from Python")</script>
-<script type="text/plain" data-file="example.js" data-expect>Hello from JavaScript</script>
-<script type="text/plain" data-file="example.py" data-expect>Hello from Python</script>
+<script type="text/plain" data-file="js/example.js" data-step>console.log("Hello from JavaScript");</script>
+<script type="text/plain" data-file="python/example.py" data-step>print("Hello from Python")</script>
+<script type="text/plain" data-file="js/example.js" data-expect>Hello from JavaScript</script>
+<script type="text/plain" data-file="python/example.py" data-expect>Hello from Python</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 3 minutes. **</b> Students: new files <code>example.js</code>, <code>example.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>example.js</b> · part 1</p>
+    <p class="tf"><b>js/example.js</b> · part 1</p>
     <pre>console.log(&quot;Hello from JavaScript&quot;);</pre>
-    <p class="tf"><b>example.py</b> · part 1</p>
+    <p class="tf"><b>python/example.py</b> · part 1</p>
     <pre>print(&quot;Hello from Python&quot;)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/fundamentals/js
+docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node example.js
-docker build -t py-fundamentals -f Dockerfile.python .
+# right terminal: ~/fundamentals/python
+docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 example.py</pre>
     </div>
     <ul>
-      <li>Type the line, <b>Ctrl+S</b>. Left terminal: <code>docker build -t js-fundamentals -f Dockerfile.node .</code>, then <code>docker run --rm --init js-fundamentals node example.js</code>. Right terminal: the Python pair. (Backup: N, N, R.)</li>
+      <li>Type the line, <b>Ctrl+S</b>. Left terminal: <code>docker build -t js-fundamentals .</code>, then <code>docker run --rm --init js-fundamentals node example.js</code>. Right terminal: the Python pair. (Backup: N, N, R.)</li>
       <li>The build prints <code>[+] Building … FINISHED</code> and <code>naming to … js-fundamentals</code>; the run prints <b>Hello from JavaScript</b>.</li>
       <li><code>console.log()</code> logs to the console where the code runs; <code>print()</code> prints to the terminal.</li>
     </ul>
-    <p><b>Watch for:</b> "failed to read dockerfile" = wrong <code>-f</code> name or not in <code>fundamentals/</code>. First build is slow if the base image isn't pulled yet.</p>
+    <p><b>Watch for:</b> "failed to read dockerfile" = the terminal isn't in <code>js/</code> or <code>python/</code> (<code>cd js</code>), or the file isn't named exactly <code>Dockerfile</code>. "Cannot find module" = the <code>.js</code> file is in the wrong folder. First build is slow if the base image isn't pulled yet.</p>
   </aside>
 </section>
 
@@ -193,62 +201,64 @@ docker run --rm --init py-fundamentals python3 example.py</pre>
 
 <section class="slide pad" data-seg="Code along: variables" data-at="14">
   <h2>Variables and naming <span class="say">variables.js · variables.py</span></h2>
-  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
-<script type="text/plain" data-file="variables.js" data-step>let userName = "Alex";
+  <div class="vscode" data-folder="fundamentals" data-docker="js:js-fundamentals|python:py-fundamentals">
+<script type="text/plain" data-file="js/variables.js" data-step>let userName = "Alex";
 console.log(userName);</script>
-<script type="text/plain" data-file="variables.py" data-step>user_name = "Alex"
+<script type="text/plain" data-file="python/variables.py" data-step>user_name = "Alex"
 print(user_name)</script>
-<script type="text/plain" data-file="variables.js" data-step>// change what's in the box (no let the second time)
+<script type="text/plain" data-file="js/variables.js" data-step>// change what's in the box (no let the second time)
 userName = "Sam";
 console.log(userName);</script>
-<script type="text/plain" data-file="variables.py" data-step># change what's in the box
+<script type="text/plain" data-file="python/variables.py" data-step># change what's in the box
 user_name = "Sam"
 print(user_name)</script>
-<script type="text/plain" data-file="variables.js" data-step>// camelCase for variables, UPPER_CASE for constants
+<script type="text/plain" data-file="js/variables.js" data-step>// camelCase for variables, UPPER_CASE for constants
 let favoriteColor = "blue";
 let MAX_USERS = 30;
 console.log(favoriteColor, MAX_USERS);</script>
-<script type="text/plain" data-file="variables.py" data-step># snake_case for variables, UPPER_CASE for constants
+<script type="text/plain" data-file="python/variables.py" data-step># snake_case for variables, UPPER_CASE for constants
 favorite_color = "blue"
 MAX_USERS = 30
 print(favorite_color, MAX_USERS)</script>
-<script type="text/plain" data-file="variables.js" data-expect>Alex
+<script type="text/plain" data-file="js/variables.js" data-expect>Alex
 Sam
 blue 30</script>
-<script type="text/plain" data-file="variables.py" data-expect>Alex
+<script type="text/plain" data-file="python/variables.py" data-expect>Alex
 Sam
 blue 30</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: new files <code>variables.js</code> and <code>variables.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>variables.js</b> · part 1</p>
+    <p class="tf"><b>js/variables.js</b> · part 1</p>
     <pre>let userName = &quot;Alex&quot;;
 console.log(userName);</pre>
-    <p class="tf"><b>variables.py</b> · part 1</p>
+    <p class="tf"><b>python/variables.py</b> · part 1</p>
     <pre>user_name = &quot;Alex&quot;
 print(user_name)</pre>
-    <p class="tf"><b>variables.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/variables.js</b> · part 2 (add below, after a blank line)</p>
     <pre>// change what&#x27;s in the box (no let the second time)
 userName = &quot;Sam&quot;;
 console.log(userName);</pre>
-    <p class="tf"><b>variables.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/variables.py</b> · part 2 (add below, after a blank line)</p>
     <pre># change what&#x27;s in the box
 user_name = &quot;Sam&quot;
 print(user_name)</pre>
-    <p class="tf"><b>variables.js</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>js/variables.js</b> · part 3 (add below, after a blank line)</p>
     <pre>// camelCase for variables, UPPER_CASE for constants
 let favoriteColor = &quot;blue&quot;;
 let MAX_USERS = 30;
 console.log(favoriteColor, MAX_USERS);</pre>
-    <p class="tf"><b>variables.py</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>python/variables.py</b> · part 3 (add below, after a blank line)</p>
     <pre># snake_case for variables, UPPER_CASE for constants
 favorite_color = &quot;blue&quot;
 MAX_USERS = 30
 print(favorite_color, MAX_USERS)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/fundamentals/js
+docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node variables.js
-docker build -t py-fundamentals -f Dockerfile.python .
+# right terminal: ~/fundamentals/python
+docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 variables.py</pre>
     </div>
     <ul>
@@ -262,36 +272,36 @@ docker run --rm --init py-fundamentals python3 variables.py</pre>
 
 <section class="slide pad" data-seg="Code along: primitives" data-at="18">
   <h2>Primitive types: one value each <span class="say">primitives.js · primitives.py</span></h2>
-  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
-<script type="text/plain" data-file="primitives.js" data-step>let message = "Hello, world!";
+  <div class="vscode" data-folder="fundamentals" data-docker="js:js-fundamentals|python:py-fundamentals">
+<script type="text/plain" data-file="js/primitives.js" data-step>let message = "Hello, world!";
 console.log(message);
 let count = 10;
 console.log(count);</script>
-<script type="text/plain" data-file="primitives.py" data-step>message = "Hello, world!"
+<script type="text/plain" data-file="python/primitives.py" data-step>message = "Hello, world!"
 print(message)
 count = 10
 print(count)</script>
-<script type="text/plain" data-file="primitives.js" data-step>let isActive = true;
+<script type="text/plain" data-file="js/primitives.js" data-step>let isActive = true;
 console.log(isActive);
 let data = null;
 console.log(data);</script>
-<script type="text/plain" data-file="primitives.py" data-step>is_active = True
+<script type="text/plain" data-file="python/primitives.py" data-step>is_active = True
 print(is_active)
 data = None
 print(data)</script>
-<script type="text/plain" data-file="primitives.js" data-step>let price = 9.99;
+<script type="text/plain" data-file="js/primitives.js" data-step>let price = 9.99;
 console.log(typeof price, typeof count);
 let value;
 console.log(value);</script>
-<script type="text/plain" data-file="primitives.py" data-step>price = 9.99
+<script type="text/plain" data-file="python/primitives.py" data-step>price = 9.99
 print(type(price), type(count))</script>
-<script type="text/plain" data-file="primitives.js" data-expect>Hello, world!
+<script type="text/plain" data-file="js/primitives.js" data-expect>Hello, world!
 10
 true
 null
 number number
 undefined</script>
-<script type="text/plain" data-file="primitives.py" data-expect>Hello, world!
+<script type="text/plain" data-file="python/primitives.py" data-expect>Hello, world!
 10
 True
 None
@@ -300,37 +310,39 @@ None
   <aside class="notes">
     <p><b>** CODE ALONG, about 4 minutes. **</b> Students: <code>primitives.js</code> and <code>primitives.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>primitives.js</b> · part 1</p>
+    <p class="tf"><b>js/primitives.js</b> · part 1</p>
     <pre>let message = &quot;Hello, world!&quot;;
 console.log(message);
 let count = 10;
 console.log(count);</pre>
-    <p class="tf"><b>primitives.py</b> · part 1</p>
+    <p class="tf"><b>python/primitives.py</b> · part 1</p>
     <pre>message = &quot;Hello, world!&quot;
 print(message)
 count = 10
 print(count)</pre>
-    <p class="tf"><b>primitives.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/primitives.js</b> · part 2 (add below, after a blank line)</p>
     <pre>let isActive = true;
 console.log(isActive);
 let data = null;
 console.log(data);</pre>
-    <p class="tf"><b>primitives.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/primitives.py</b> · part 2 (add below, after a blank line)</p>
     <pre>is_active = True
 print(is_active)
 data = None
 print(data)</pre>
-    <p class="tf"><b>primitives.js</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>js/primitives.js</b> · part 3 (add below, after a blank line)</p>
     <pre>let price = 9.99;
 console.log(typeof price, typeof count);
 let value;
 console.log(value);</pre>
-    <p class="tf"><b>primitives.py</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>python/primitives.py</b> · part 3 (add below, after a blank line)</p>
     <pre>price = 9.99
 print(type(price), type(count))</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/fundamentals/js
+docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node primitives.js
-docker build -t py-fundamentals -f Dockerfile.python .
+# right terminal: ~/fundamentals/python
+docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 primitives.py</pre>
     </div>
     <ul>
@@ -391,35 +403,35 @@ docker run --rm --init py-fundamentals python3 primitives.py</pre>
 
 <section class="slide pad" data-seg="Code along: collections" data-at="29">
   <h2>Lists, objects and dicts <span class="say">collections.js · collections.py</span></h2>
-  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
-<script type="text/plain" data-file="collections.js" data-step>// idxs         0       1       2
+  <div class="vscode" data-folder="fundamentals" data-docker="js:js-fundamentals|python:py-fundamentals">
+<script type="text/plain" data-file="js/collections.js" data-step>// idxs         0       1       2
 let colors = ["red", "green", "blue"];
 console.log(colors);
 console.log(colors[1]);</script>
-<script type="text/plain" data-file="collections.py" data-step># idxs      0       1        2
+<script type="text/plain" data-file="python/collections.py" data-step># idxs      0       1        2
 colors = ["red", "green", "blue"]
 print(colors)
 print(colors[1])</script>
-<script type="text/plain" data-file="collections.js" data-step>let user = { name: "Alex", age: 30 };
+<script type="text/plain" data-file="js/collections.js" data-step>let user = { name: "Alex", age: 30 };
 console.log(user);
 console.log(user.name);</script>
-<script type="text/plain" data-file="collections.py" data-step>user = {"name": "Alex", "age": 30}
+<script type="text/plain" data-file="python/collections.py" data-step>user = {"name": "Alex", "age": 30}
 print(user)
 print(user.get("name"))</script>
-<script type="text/plain" data-file="collections.js" data-step>// bracket notation: add, then remove
+<script type="text/plain" data-file="js/collections.js" data-step>// bracket notation: add, then remove
 user["city"] = "Chicago";
 delete user.age;
 console.log(user);</script>
-<script type="text/plain" data-file="collections.py" data-step># bracket notation: add, then remove
+<script type="text/plain" data-file="python/collections.py" data-step># bracket notation: add, then remove
 user["city"] = "Chicago"
 del user["age"]
 print(user)</script>
-<script type="text/plain" data-file="collections.js" data-expect>[ 'red', 'green', 'blue' ]
+<script type="text/plain" data-file="js/collections.js" data-expect>[ 'red', 'green', 'blue' ]
 green
 { name: 'Alex', age: 30 }
 Alex
 { name: 'Alex', city: 'Chicago' }</script>
-<script type="text/plain" data-file="collections.py" data-expect>['red', 'green', 'blue']
+<script type="text/plain" data-file="python/collections.py" data-expect>['red', 'green', 'blue']
 green
 {'name': 'Alex', 'age': 30}
 Alex
@@ -428,37 +440,39 @@ Alex
   <aside class="notes">
     <p><b>** CODE ALONG, about 5 minutes. **</b> Students: <code>collections.js</code> and <code>collections.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>collections.js</b> · part 1</p>
+    <p class="tf"><b>js/collections.js</b> · part 1</p>
     <pre>// idxs         0       1       2
 let colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
 console.log(colors);
 console.log(colors[1]);</pre>
-    <p class="tf"><b>collections.py</b> · part 1</p>
+    <p class="tf"><b>python/collections.py</b> · part 1</p>
     <pre># idxs      0       1        2
 colors = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;]
 print(colors)
 print(colors[1])</pre>
-    <p class="tf"><b>collections.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/collections.js</b> · part 2 (add below, after a blank line)</p>
     <pre>let user = { name: &quot;Alex&quot;, age: 30 };
 console.log(user);
 console.log(user.name);</pre>
-    <p class="tf"><b>collections.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/collections.py</b> · part 2 (add below, after a blank line)</p>
     <pre>user = {&quot;name&quot;: &quot;Alex&quot;, &quot;age&quot;: 30}
 print(user)
 print(user.get(&quot;name&quot;))</pre>
-    <p class="tf"><b>collections.js</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>js/collections.js</b> · part 3 (add below, after a blank line)</p>
     <pre>// bracket notation: add, then remove
 user[&quot;city&quot;] = &quot;Chicago&quot;;
 delete user.age;
 console.log(user);</pre>
-    <p class="tf"><b>collections.py</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>python/collections.py</b> · part 3 (add below, after a blank line)</p>
     <pre># bracket notation: add, then remove
 user[&quot;city&quot;] = &quot;Chicago&quot;
 del user[&quot;age&quot;]
 print(user)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/fundamentals/js
+docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node collections.js
-docker build -t py-fundamentals -f Dockerfile.python .
+# right terminal: ~/fundamentals/python
+docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 collections.py</pre>
     </div>
     <ul>
@@ -473,74 +487,76 @@ docker run --rm --init py-fundamentals python3 collections.py</pre>
 <!-- ============ MUTABLE (34–40) ============ -->
 <section class="slide pad" data-seg="Code along: mutable" data-at="34">
   <h2>Can it change? <span class="say">mutable.js · mutable.py</span></h2>
-  <div class="vscode" data-folder="fundamentals" data-docker="Dockerfile.node:js-fundamentals|Dockerfile.python:py-fundamentals">
-<script type="text/plain" data-file="mutable.js" data-step>// a list is mutable: it changes in place
+  <div class="vscode" data-folder="fundamentals" data-docker="js:js-fundamentals|python:py-fundamentals">
+<script type="text/plain" data-file="js/mutable.js" data-step>// a list is mutable: it changes in place
 let colors = ["red", "green"];
 colors.push("blue");
 console.log(colors);</script>
-<script type="text/plain" data-file="mutable.py" data-step># a list is mutable: it changes in place
+<script type="text/plain" data-file="python/mutable.py" data-step># a list is mutable: it changes in place
 colors = ["red", "green"]
 colors.append("blue")
 print(colors)</script>
-<script type="text/plain" data-file="mutable.js" data-step>// a string is immutable: you get a NEW string
+<script type="text/plain" data-file="js/mutable.js" data-step>// a string is immutable: you get a NEW string
 let name = "alex";
 let loud = name.toUpperCase();
 console.log(name, loud);</script>
-<script type="text/plain" data-file="mutable.py" data-step># a string is immutable: you get a NEW string
+<script type="text/plain" data-file="python/mutable.py" data-step># a string is immutable: you get a NEW string
 name = "alex"
 loud = name.upper()
 print(name, loud)</script>
-<script type="text/plain" data-file="mutable.js" data-step>// the bug: two labels, one list
+<script type="text/plain" data-file="js/mutable.js" data-step>// the bug: two labels, one list
 let copy = colors;
 copy.push("pink");
 console.log(colors);</script>
-<script type="text/plain" data-file="mutable.py" data-step># the bug: two labels, one list
+<script type="text/plain" data-file="python/mutable.py" data-step># the bug: two labels, one list
 copy = colors
 copy.append("pink")
 print(colors)</script>
-<script type="text/plain" data-file="mutable.js" data-expect>[ 'red', 'green', 'blue' ]
+<script type="text/plain" data-file="js/mutable.js" data-expect>[ 'red', 'green', 'blue' ]
 alex ALEX
 [ 'red', 'green', 'blue', 'pink' ]</script>
-<script type="text/plain" data-file="mutable.py" data-expect>['red', 'green', 'blue']
+<script type="text/plain" data-file="python/mutable.py" data-expect>['red', 'green', 'blue']
 alex ALEX
 ['red', 'green', 'blue', 'pink']</script>
   </div>
   <aside class="notes">
     <p><b>** CODE ALONG, about 3 minutes. **</b> Students: <code>mutable.js</code> and <code>mutable.py</code>.</p>
     <div class="typecode"><p class="th">TYPE THIS, in order</p>
-    <p class="tf"><b>mutable.js</b> · part 1</p>
+    <p class="tf"><b>js/mutable.js</b> · part 1</p>
     <pre>// a list is mutable: it changes in place
 let colors = [&quot;red&quot;, &quot;green&quot;];
 colors.push(&quot;blue&quot;);
 console.log(colors);</pre>
-    <p class="tf"><b>mutable.py</b> · part 1</p>
+    <p class="tf"><b>python/mutable.py</b> · part 1</p>
     <pre># a list is mutable: it changes in place
 colors = [&quot;red&quot;, &quot;green&quot;]
 colors.append(&quot;blue&quot;)
 print(colors)</pre>
-    <p class="tf"><b>mutable.js</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>js/mutable.js</b> · part 2 (add below, after a blank line)</p>
     <pre>// a string is immutable: you get a NEW string
 let name = &quot;alex&quot;;
 let loud = name.toUpperCase();
 console.log(name, loud);</pre>
-    <p class="tf"><b>mutable.py</b> · part 2 (add below, after a blank line)</p>
+    <p class="tf"><b>python/mutable.py</b> · part 2 (add below, after a blank line)</p>
     <pre># a string is immutable: you get a NEW string
 name = &quot;alex&quot;
 loud = name.upper()
 print(name, loud)</pre>
-    <p class="tf"><b>mutable.js</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>js/mutable.js</b> · part 3 (add below, after a blank line)</p>
     <pre>// the bug: two labels, one list
 let copy = colors;
 copy.push(&quot;pink&quot;);
 console.log(colors);</pre>
-    <p class="tf"><b>mutable.py</b> · part 3 (add below, after a blank line)</p>
+    <p class="tf"><b>python/mutable.py</b> · part 3 (add below, after a blank line)</p>
     <pre># the bug: two labels, one list
 copy = colors
 copy.append(&quot;pink&quot;)
 print(colors)</pre>
-    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre>docker build -t js-fundamentals -f Dockerfile.node .
+    <p class="tf"><b>Ctrl+S</b>, then in the terminal:</p><pre># left terminal: ~/fundamentals/js
+docker build -t js-fundamentals .
 docker run --rm --init js-fundamentals node mutable.js
-docker build -t py-fundamentals -f Dockerfile.python .
+# right terminal: ~/fundamentals/python
+docker build -t py-fundamentals .
 docker run --rm --init py-fundamentals python3 mutable.py</pre>
     </div>
     <ul>
@@ -581,6 +597,6 @@ docker run --rm --init py-fundamentals python3 mutable.py</pre>
 
 </div>
 <script src="../shared/deck.js"></script>
-<script src="../shared/codepad.js?v=3"></script>
+<script src="../shared/codepad.js?v=5"></script>
 </body>
 </html>

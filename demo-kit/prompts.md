@@ -3,7 +3,7 @@
 Every file both lectures type, as it ends up, with the output it prints (run with real `node` / `python3` when this file was made). The slides' codepad types the same code in chunks.
 
 
-## Lecture 1: JS & Python Fundamentals (folder `fundamentals/`)
+## Lecture 1: JS & Python Fundamentals (folder `fundamentals/`: `.js` files in `js/`, `.py` files in `python/`)
 
 ```bash
 mkdir fundamentals
@@ -238,13 +238,18 @@ alex ALEX
 ```
 
 
-### The Docker slide (Lecture 1, slide 7)
+### Running any file (both lectures)
 ```bash
-docker build -t hello-js -f Dockerfile.node .
-docker run --rm hello-js            # Hello from JavaScript
-docker build -t hello-py -f Dockerfile.python .
-docker run --rm hello-py            # Hello from Python
+# terminal 1
+cd js
+docker build -t js-fundamentals .
+docker run --rm --init js-fundamentals node example.js       # Hello from JavaScript
+# terminal 2
+cd python
+docker build -t py-fundamentals .
+docker run --rm --init py-fundamentals python3 example.py    # Hello from Python
 ```
+Lecture 2: the same in `functional/js` and `functional/python`, images `js-functional` / `py-functional`.
 No node / python3 on a student laptop:
 ```bash
 docker run --rm -v "$PWD":/app -w /app node:18-alpine node example.js
@@ -252,7 +257,7 @@ docker run --rm -v "$PWD":/app -w /app python:3.11-slim python3 example.py
 ```
 
 
-## Lecture 2: Functional Programming (folder `functional/`)
+## Lecture 2: Functional Programming (folder `functional/`: `.js` files in `js/`, `.py` files in `python/`)
 
 ```bash
 mkdir functional

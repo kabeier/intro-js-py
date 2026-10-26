@@ -19,6 +19,8 @@
   const KEEP_LINES = 400
   const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   const langOf = (f) => (f.endsWith('.py') ? 'py' : 'js')
+  const baseOf = (f) => f.slice(f.lastIndexOf('/') + 1) // js/primitives.js -> primitives.js
+  const dirOf = (f) => (f.includes('/') ? f.slice(0, f.lastIndexOf('/')) : '')
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
   if (isPresenter) return presenterControls()
@@ -667,7 +669,7 @@
 
   // ---------- Two editor kinds with one small API ----------
   function monacoEditor(m, host, file, text, uri, hooks) {
-    const lang = file.endsWith('.py') ? 'python' : file.endsWith('.json') ? 'json' : /\.ya?ml$/.test(file) ? 'yaml' : file === 'Dockerfile' ? 'dockerfile' : 'javascript'
+    const lang = file.endsWith('.py') ? 'python' : file.endsWith('.json') ? 'json' : /\.ya?ml$/.test(file) ? 'yaml' : baseOf(file) === 'Dockerfile' ? 'dockerfile' : 'javascript'
     const model = m.editor.createModel(text, lang, m.Uri.parse(uri))
     model.updateOptions({ tabSize: langOf(file) === 'py' ? 4 : 2, indentSize: langOf(file) === 'py' ? 4 : 2, insertSpaces: true })
     const ed = m.editor.create(host, {
@@ -806,7 +808,19 @@
     }
   }
 
-  function makeShell(term, pad) {
+  function makeShell(term, P, startDir = '') {
+    // The terminal's working folder inside the project: '' = the project folder, 'js' = project/js
+    let cwd = startDir
+    const pre = () => (cwd ? cwd + '/' : '')
+    const pad = { // the project as seen from cwd
+      get folder() { return (P.folder || term.closest('.vscode')?.dataset.folder || 'project') + (cwd ? '/' + cwd : '') },
+      fsRead: (f) => P.fsRead(pre() + f),
+      fsWrite: (f, t) => P.fsWrite(pre() + f, t),
+      fsAll() { const out = {}, p = pre(); for (const [k, v] of Object.entries(P.fsAll())) if (k.startsWith(p) && !k.slice(p.length).includes('/')) out[k.slice(p.length)] = v; return out },
+      files() { const out = [], p = pre(); for (const f of P.files()) if (f.startsWith(p)) { const r = f.slice(p.length).split('/')[0]; if (!out.includes(r)) out.push(r) } return out },
+      recorded: (f, code) => P.recorded(pre() + f, code),
+    }
+    const psText = () => `~/${pad.folder} $ `
     term.innerHTML = '<div class="tout"></div><div class="tprompt"><span class="ps">$&nbsp;</span><input class="tin" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="terminal"></div>'
     term.tabIndex = -1
     const outEl = term.querySelector('.tout'), promptEl = term.querySelector('.tprompt'), input = term.querySelector('.tin')
@@ -814,6 +828,7 @@
     let hIdx = 0, running = null, typing = false, lastExit = 0
     const print = (cls, text) => {
       const d = document.createElement('div'); d.className = cls
+      if (cls === 'cmd') d.dataset.ps = psText()
       if (text.includes('\x1b')) ansiInto(d, text); else d.textContent = text
       outEl.append(d)
       while (outEl.childElementCount > KEEP_LINES) outEl.firstChild.remove()
@@ -827,6 +842,8 @@
       return Math.max(40, Math.floor(inner / cw) - 1)
     }
     const sys = (s) => print('sys', s)
+    const drawPs = () => { term.querySelector('.ps').textContent = psText() }
+    drawPs()
 
     function runJob(kind, job, recorded, onCtrlC) {
       promptEl.style.display = 'none'
@@ -967,7 +984,7 @@
         return runJob('py', { t: 'run', files: img.files, folder: pad.folder, root, file }, pad.recorded(file, img.files[file]))
       }
       if (sub === 'images') { const names = Object.keys(images); print('out', 'IMAGE'); names.forEach((n) => print('out', `${n}:latest`)); lastExit = 0; return }
-      sys('(This practice terminal knows: docker build -t <name> -f <Dockerfile> .  ·  docker run --rm <name> [node|python3 <file>])'); lastExit = 1
+      sys('(This practice terminal knows: docker build -t <name> .  ·  docker run --rm --init <name> [node|python3 <file>])'); lastExit = 1
     }
 
     const shell = {
@@ -991,7 +1008,19 @@
         if (cmd === 'pwd') { print('out', `/home/student/${pad.folder}`); return done() }
         if (cmd === 'echo') { const s = args.join(' '); print('out', s === '$?' ? String(lastExit) : s.replace(/^["']|["']$/g, '')); return done() }
         if (cmd === 'cat') { const t = pad.fsRead(file); if (t === undefined) { print('err', `cat: ${file}: No such file or directory`); return done(1) } t.replace(/\n$/, '').split('\n').forEach((l) => print('out', l)); return done() }
-        if (['cd', 'mkdir', 'code', 'touch'].includes(cmd)) { sys(`(This practice terminal stays in ${pad.folder}/. Create files in the editor.)`); return done() }
+        if (cmd === 'cd') {
+          const to = (args[0] || '~').replace(/\/+$/, '')
+          if (to === '~' || to === '') { sys(`(This practice terminal stays inside ${pad.folder.split('/')[0]}/. Try: cd js · cd python · cd ..)`); return done() }
+          const parts = cwd ? cwd.split('/') : []
+          for (const seg of to.split('/')) {
+            if (seg === '.' || !seg) continue
+            if (seg === '..') { if (!parts.length) { sys(`(This practice terminal stays inside ${pad.folder.split('/')[0]}/.)`); return done() } parts.pop() }
+            else if (P.files().some((f) => f.startsWith([...parts, seg].join('/') + '/'))) parts.push(seg)
+            else { print('err', `bash: cd: ${args[0]}: No such file or directory`); return done(1) }
+          }
+          cwd = parts.join('/'); drawPs(); return done()
+        }
+        if (['mkdir', 'code', 'touch'].includes(cmd)) { sys(`(This practice terminal stays in ${pad.folder}/. Create files in the editor.)`); return done() }
         if (cmd === 'docker') return docker(args)
         if (cmd === 'pip' || cmd === 'pip3' || (isPy && args[0] === '-m' && args[1] === 'pip')) { sys('(Practice terminal: pytest is already installed here. In your own terminal this downloads and installs it.)'); return done() }
         if (cmd === 'pytest' || cmd === 'py.test' || (isPy && args[0] === '-m' && args[1] === 'pytest')) {
@@ -1114,13 +1143,13 @@
           <svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><path d="M15 4h5v5"/></svg>
         </div>
         <div class="vs-exp"><div class="h">EXPLORER</div><div class="folder">⌄ ${esc(folder.toUpperCase())}</div>
-          ${explorerFiles.map((f) => `<div class="f${names.includes(f) ? ' cur' : ''}" data-f="${esc(f)}">${fileIcon(f)}${esc(f)}</div>`).join('')}</div>
+          ${explorerFiles.map((f, k) => (dirOf(f) && dirOf(f) !== dirOf(explorerFiles[k - 1] || '') ? `<div class="d">⌄ ${esc(dirOf(f))}</div>` : '') + `<div class="f${names.includes(f) ? ' cur' : ''}${dirOf(f) ? ' sub' : ''}" data-f="${esc(f)}">${fileIcon(f)}${esc(baseOf(f))}</div>`).join('')}</div>
         <div class="vs-groups"><div class="vs-peek" hidden><div class="vs-tabs"><div class="vs-tab"><span class="pk-icon"></span><span class="pk-name"></span><span class="pk-ro">read-only</span><button type="button" class="pk-x" title="Close (Esc)">×</button></div></div>
             <div class="vs-crumb"></div><pre class="pk-code"></pre></div>${names.map((n) => `
           <div class="vs-group" data-f="${esc(n)}">
-            <div class="vs-tabs"><div class="vs-tab">${fileIcon(n)}${esc(n)}<span class="x" title="● = not saved yet (Ctrl+S)">×</span></div>
+            <div class="vs-tabs"><div class="vs-tab">${fileIcon(n)}${esc(baseOf(n))}<span class="x" title="● = not saved yet (Ctrl+S)">×</span></div>
               <button type="button" class="vs-run" title="Save and run this file in its terminal (Ctrl+Enter)"><svg viewBox="0 0 10 10"><path d="M2 1l7 4-7 4z"/></svg>Run</button></div>
-            <div class="vs-crumb">${esc(folder)} › ${esc(n)}</div>
+            <div class="vs-crumb">${esc(folder)} › ${esc(n.replace(/\//g, ' › '))}</div>
             <div class="vs-code"></div>
           </div>`).join('')}</div>
       </div>
@@ -1145,14 +1174,14 @@
     names.forEach((n) => {
       const g = root.querySelector(`.vs-group[data-f="${CSS.escape(n)}"]`)
       ed[n] = { name: n, lang: langOf(n), g, host: g.querySelector('.vs-code'), tab: g.querySelector('.vs-tab .x'), editor: null,
-                shell: shared || makeShell(root.querySelector(`.vs-term[data-f="${CSS.escape(n)}"]`), pad) }
+                shell: shared || makeShell(root.querySelector(`.vs-term[data-f="${CSS.escape(n)}"]`), pad, dirOf(n)) }
     })
 
     // Click a file in the explorer: files with a pane get focus; the rest (Dockerfiles, earlier slides' files) open read-only
     const peek = root.querySelector('.vs-peek')
     const peekHtml = (f, t) => {
       if (/\.(js|py)$/.test(f)) return highlight(t, langOf(f))
-      if (/^Dockerfile/.test(f)) return t.split('\n').map((l) => {
+      if (/^Dockerfile/.test(baseOf(f))) return t.split('\n').map((l) => {
         if (/^\s*#/.test(l)) return `<span class="t-com">${esc(l)}</span>`
         const m = l.match(/^(\s*)([A-Z]+)\b(.*)$/)
         const rest = esc(m ? m[3] : l).replace(/"([^"]*)"/g, '<span class="t-str">"$1"</span>')
@@ -1165,8 +1194,8 @@
       const t = pad.fsRead(f)
       if (t === undefined) return
       peek.querySelector('.pk-icon').outerHTML = '<span class="pk-icon">' + fileIcon(f) + '</span>'
-      peek.querySelector('.pk-name').textContent = f
-      peek.querySelector('.vs-crumb').textContent = `${folder} › ${f}`
+      peek.querySelector('.pk-name').textContent = baseOf(f)
+      peek.querySelector('.vs-crumb').textContent = `${folder} › ${f.replace(/\//g, ' › ')}`
       peek.querySelector('.pk-code').innerHTML = t ? peekHtml(f, t.replace(/\n$/, '')) : '<span class="t-com">(empty file)</span>'
       closePeek(); peek.hidden = false
       root.querySelector(`.vs-exp .f[data-f="${CSS.escape(f)}"]`)?.classList.add('peeked')
@@ -1178,6 +1207,8 @@
       if (!peek.hidden && el.classList.contains('peeked')) closePeek(); else openPeek(f)
     })
     peek.querySelector('.pk-x').addEventListener('click', closePeek)
+    // Many files: the explorer scrolls (like VS Code); start with this slide's files in view
+    const showCurrent = () => { const ex = root.querySelector('.vs-exp'), last = [...ex.querySelectorAll('.f.cur')].pop(); if (last && last.offsetTop + last.offsetHeight > ex.clientHeight) ex.scrollTop = last.offsetTop + last.offsetHeight - ex.clientHeight + 8 }
 
     const valueOf = (n) => (ed[n] && ed[n].editor ? ed[n].editor.value : saved[n] !== undefined ? saved[n] : start[n])
     const markDirty = () => names.forEach((n) => { const d = valueOf(n) !== saved[n]; ed[n].tab.textContent = d ? '●' : '×'; ed[n].tab.classList.toggle('dirty', d) })
@@ -1186,7 +1217,7 @@
     function build() {
       if (built) return built
       built = (async () => {
-        fit()
+        fit(); showCurrent()
         const m = await loadMonaco()
         names.forEach((n) => {
           const e = ed[n]
@@ -1203,8 +1234,8 @@
     const runCmd = (n) => (/^test_.*\.py$|_test\.py$/.test(n) ? `pytest ${n}` : /\.(spec|test)\.js$/.test(n) ? 'npm test' : n.endsWith('.json') ? `cat ${n}` : langOf(n) === 'py' ? `python3 ${n}` : `node ${n}`)
     const runList = (root.dataset.run || '').split('|').map((c) => c.trim()).filter(Boolean)
     const dockerMap = Object.fromEntries((root.dataset.docker || '').split('|').filter(Boolean).map((p) => p.split(':')))
-    const dockerFor = (n) => { const df = langOf(n) === 'py' ? 'Dockerfile.python' : 'Dockerfile.node'; return dockerMap[df] ? [df, dockerMap[df]] : null }
-    const runCmds = (n) => { const d = dockerFor(n); return d ? [`docker build -t ${d[1]} -f ${d[0]} .`, `docker run --rm --init ${d[1]} ${langOf(n) === 'py' ? 'python3' : 'node'} ${n}`] : [runCmd(n)] }
+    // data-docker="js:js-fundamentals|python:py-fundamentals": folder -> image, built from the Dockerfile in that folder
+    const runCmds = (n) => { const img = dockerMap[dirOf(n)]; return img ? [`docker build -t ${img} .`, `docker run --rm --init ${img} ${langOf(n) === 'py' ? 'python3' : 'node'} ${baseOf(n)}`] : [runCmd(baseOf(n))] }
 
     function drawStatus() {
       const busy = !built

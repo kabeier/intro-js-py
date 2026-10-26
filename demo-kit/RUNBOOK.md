@@ -1,8 +1,8 @@
 # Live demo runbook: JavaScript and Python, code along
 
-**The story:** both lectures are code along. Students type every file in **their own VS Code** and run it **through Docker** in **their own terminal**, as the lesson sets up: `docker build -t js-fundamentals -f Dockerfile.node .` then `docker run --rm --init js-fundamentals node <file>` (Python: `py-fundamentals`, `python3`). Rebuild after every edit. You present from the slides: each code slide is a real editor (Monaco, the editor inside VS Code) with a terminal you type commands into, and the code really runs. No app, no Claude prompt.
-- **Lecture 1 (JS & Python Fundamentals):** why both, runtimes, variables, primitive types, lists/objects/dicts, mutable vs immutable. Folder: `fundamentals/`.
-- **Lecture 2 (Functional Programming):** comparisons, if/else, loops, while, functions and return, arrow/lambda, filter/sort/map. Folder: `functional/`.
+**The story:** both lectures are code along. Students type every file in **their own VS Code** and run it **through Docker** in **their own terminal**, as the lesson sets up. **Two folders:** `js/` (the Node `Dockerfile` + every `.js` file) and `python/` (the Python `Dockerfile` + every `.py` file). One terminal `cd js`, the other `cd python`; then `docker build -t js-fundamentals .` and `docker run --rm --init js-fundamentals node <file>` (Python: `py-fundamentals`, `python3`). No `-f` needed. Rebuild after every edit. You present from the slides: each code slide is a real editor (Monaco, the editor inside VS Code) with a terminal you type commands into, and the code really runs. No app, no Claude prompt.
+- **Lecture 1 (JS & Python Fundamentals):** why both, runtimes, variables, primitive types, lists/objects/dicts, mutable vs immutable. Folder: `fundamentals/` with `js/` and `python/` inside.
+- **Lecture 2 (Functional Programming):** comparisons, if/else, loops, while, functions and return, arrow/lambda, filter/sort/map. Folder: `functional/` with `js/` and `python/` inside.
 
 ## The codepad (every "Code along" slide)
 
@@ -13,7 +13,7 @@ It's **Monaco, the editor inside VS Code**, plus a terminal you type into. Work 
 | Type code | Click in the editor. Autocomplete, hovers, Ctrl+/ comments, Ctrl+Z, multi-cursor all work |
 | Save | **Ctrl+S**. ● on the tab = unsaved. **The terminal runs the saved file**, like real VS Code (show this once: it's the #1 student bug) |
 | Run | Click the terminal under the file, type `node file.js` or `python3 file.py`, Enter. Or the **▶ Run** button on the tab, or **Ctrl+Enter** in the editor (saves + runs) |
-| Read a Dockerfile | Click **Dockerfile.node** / **Dockerfile.python** in the Explorer: it opens **read-only** in the editor area. × or **Esc** closes it. Works for files from earlier slides too |
+| Read a Dockerfile | Click a **Dockerfile** (under `js` or `python`) in the Explorer: it opens **read-only** in the editor area. × or **Esc** closes it. Works for files from earlier slides too |
 | Stop a program | Click the terminal, **Ctrl+C** (auto-stops after 20 s if you forget) |
 | Terminal extras | ↑ ↓ history · Tab completes file names · `ls`, `cat file`, `clear`, `python3 --version` |
 | Leave the editor | **Esc**, so → / ← change slides again (keys typed in the terminal never change slides) |
@@ -33,10 +33,11 @@ docker pull node:18-alpine && docker pull python:3.11-slim
 ```
 - Open both decks in **Chrome** once with internet on, so the editor and Python are cached.
 - Have the **Code Lab** page open in a tab: students copy the Dockerfiles and commands from there.
-- Know where the finished files are: `demo-kit/fundamentals/` and `demo-kit/functional/` (each with its two Dockerfiles).
+- Know where the finished files are: `demo-kit/fundamentals/` and `demo-kit/functional/` (each with `js/` and `python/`, a `Dockerfile` in each).
 
 ### The practice `docker` in the slides
-- `docker build` reads the slide's Dockerfile and takes a **snapshot** of the files (COPY). `docker run --rm --init <image> node|python3 <file>` runs that snapshot. Program output and exit codes were checked against real Docker for every code slide.
+- Each slide terminal starts **in its folder**: the prompt says `~/fundamentals/js $` or `~/fundamentals/python $`. `cd ..`, `cd python`, `ls` and `pwd` work like a real terminal; building from the wrong folder gives the real "failed to read dockerfile" error.
+- `docker build` reads that folder's `Dockerfile` and takes a **snapshot** of the files (COPY). `docker run --rm --init <image> node|python3 <file>` runs that snapshot. Program output and exit codes were checked against real Docker for every code slide.
 - It behaves like real Docker on purpose: run before building → "pull access denied"; edit without rebuilding → the old output; a new file without rebuilding → "Cannot find module '/app/…'"; an unchanged rebuild → `CACHED [3/3] COPY . .`.
 - The build shows Docker's key lines only; real terminals print more (and pull the base image the first time).
 - **--init:** tested on real Docker: without it, Ctrl+C can't stop Node in a container (Node is process #1). The slides copy that too.
@@ -55,7 +56,7 @@ docker pull node:18-alpine && docker pull python:3.11-slim
 | 2 (1) | Deck | Ask for 3 differences | "Same idea, two spellings." |
 | 3–4 (3–5) | Deck | Why both, runtime diagram | "Both are interpreted: a runtime reads your file line by line." |
 | 5 (7) | Your terminal | `mkdir fundamentals`, `cd fundamentals`, `code .`, `docker --version`, `docker run --rm hello-world` | "Docker brings Node and Python." |
-| 6 (9) | Deck | The two Dockerfiles (COPY . .), build + run, --init | "Build after every edit: COPY is a snapshot." |
+| 6 (9) | Deck | Two folders, one `Dockerfile` each (COPY . .), `cd js` / `cd python`, build + run, --init | "Build after every edit: COPY is a snapshot." |
 | 7 (10) | Codepad | Type the line, Ctrl+S, `docker build …`, `docker run --rm --init … node example.js` (backup: N, N, R) | "Same two commands all day; ↑ repeats them." |
 | 8 (13) | Deck | Labeled box | "Use `let` for now." |
 | 9 (14) | Codepad | N N R, N N, N N R | "Same label, new contents." |
